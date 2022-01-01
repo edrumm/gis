@@ -17,3 +17,7 @@ func Connect(login string) (*sql.DB, error) {
 
 	return connection, nil
 }
+
+func QueryPostGis(db *sql.DB, queryString string) (*sql.Rows, error) { // check type of sql.Rows
+	return nil, nil
+}
