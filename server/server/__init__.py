@@ -1,15 +1,14 @@
-import os, signal
-import database
-import user.auth as auth
+import signal
 from flask import Flask
 
 app = Flask(__name__)
-# app.register_blueprint(postgres)
+
+import server.database as db
 
 
 @app.route('/')
 def hello_world():
-   return auth.test()
+   return db.test()
 
 
 def stop():
@@ -22,7 +21,6 @@ if __name__ == '__main__':
    signal.signal(signal.SIGKILL, stop)
 
    # Read env
-   # print(os.environ.get('PG_HOST'))
-   conn, cur = database.connect()
+   # conn, cur = db.connect()
 
    app.run()

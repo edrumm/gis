@@ -1,8 +1,4 @@
 import psycopg2 as pg
-from flask import Blueprint
-
-
-postgres = Blueprint('postgres', __name__)
 
 
 def test():
