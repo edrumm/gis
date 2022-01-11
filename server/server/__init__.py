@@ -1,14 +1,16 @@
-import os, signal, psycopg2
+import psycopg2
 from flask import Flask
 
 app = Flask(__name__)
 
-import server.database as db
+import server.database as database
+import server.geometry as geom
 
 
 # DB init
 try:
-   conn, cur = db.connect()
+   db = database.Database()
+   conn = db.get_conn()
 
 except (Exception, psycopg2.Error) as err:
         print('Error connecting to Postgres:', err)
@@ -24,9 +26,7 @@ def hello_world():
 # Load sample vector dataset from PostGIS
 @app.route('/test')
 def test():
-   cur.execute("""SELECT name, ST_AsText(geom) FROM nyc_subway_stations""")
-   points = cur.fetchall()
-
+   points = db.postgis_query("""SELECT name, ST_AsText(geom) FROM nyc_subway_stations""")
    return str(points)
 
 
