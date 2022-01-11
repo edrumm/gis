@@ -1,5 +1,5 @@
 import psycopg2
-from flask import Flask
+from flask import Flask, abort, Response, request
 
 app = Flask(__name__)
 
@@ -13,8 +13,8 @@ try:
    conn = db.get_conn()
 
 except (Exception, psycopg2.Error) as err:
-        print('Error connecting to Postgres:', err)
-        exit(1)
+   app.logger.error('Could not connect to Postgres: %s', err)
+   abort(Response(str(err)))
 
 
 @app.route('/')
@@ -27,6 +27,8 @@ def hello_world():
 @app.route('/test')
 def test():
    points = db.postgis_query("""SELECT name, ST_AsText(geom) FROM nyc_subway_stations""")
+   app.logger.info(points)
+
    return str(points)
 
 
