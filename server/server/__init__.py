@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 import server.database as database
 import server.geometry as geom
+import server.functions as func
 
 
 # DB init

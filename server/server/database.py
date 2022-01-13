@@ -22,9 +22,10 @@ class Database:
             cur.execute(sql)
             rows = cur.fetchall()
 
-            cur.close()
-
         return rows
 
     def get_conn(self):
         return self.conn
+
+    def new_cursor(self):
+        return self.conn.cursor()
