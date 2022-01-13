@@ -1,18 +1,10 @@
 import psycopg2 as pg
-from dotenv import dotenv_values
 
 class Database:
-    def __init__(self):
-        self.conn = self.connect()
+    def __init__(self, pg_host, pg_db, pg_user, pg_password):
+        self.conn = self.connect(pg_host, pg_db, pg_user, pg_password)
 
-    def connect(self):
-        config = dotenv_values('.env')
-
-        pg_user = config.get('PG_USER')
-        pg_host = config.get('PG_HOST')
-        pg_password = config.get('PG_PASSWORD')
-        pg_db = config.get('PG_DB')
-
+    def connect(self, pg_host, pg_db, pg_user, pg_password):
         conn = pg.connect(host=pg_host, database=pg_db, user=pg_user, password=pg_password)
 
         return conn

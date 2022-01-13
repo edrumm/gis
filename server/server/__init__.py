@@ -1,4 +1,5 @@
 import psycopg2
+from dotenv import dotenv_values
 from flask import Flask, abort, Response, request
 
 app = Flask(__name__)
@@ -10,7 +11,14 @@ import server.functions as func
 
 # DB init
 try:
-   db = database.Database()
+   config = dotenv_values('.env')
+
+   pg_user = config.get('PG_USER')
+   pg_host = config.get('PG_HOST')
+   pg_password = config.get('PG_PASSWORD')
+   pg_db = config.get('PG_DB')
+
+   db = database.Database(pg_host, pg_db, pg_user, pg_password)
    conn = db.get_conn()
 
 except (Exception, psycopg2.Error) as err:
@@ -27,7 +35,8 @@ def hello_world():
 # Load sample vector dataset from PostGIS
 @app.route('/test')
 def test():
-   points = db.postgis_query("""SELECT name, ST_AsText(geom) FROM nyc_subway_stations""")
+   # points = db.postgis_query("""SELECT name, ST_AsText(geom) FROM nyc_subway_stations""")
+   points = func.convex_hull(db, 'geom', 'nyc_subway_stations')
    app.logger.info(points)
 
    return str(points)
