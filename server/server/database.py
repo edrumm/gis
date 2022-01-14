@@ -1,5 +1,6 @@
 import psycopg2 as pg
 
+
 class Database:
     def __init__(self, pg_host, pg_db, pg_user, pg_password):
         self.conn = self.connect(pg_host, pg_db, pg_user, pg_password)
