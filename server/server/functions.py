@@ -1,11 +1,23 @@
 import server.database as database
-import server.geometry as geom
+from server.geometry import *
 from psycopg2 import sql
 from shapely import wkb
 
 
-def count_points_in_polygon(db: database, points, polygon, table):
-    pass
+def count_points_in_polygon(db: database.Database, points, polygon, table):
+    query = sql.SQL('SELECT count(*) FROM {table} WHERE ST_Intersects({points}, {polygon})').format(
+        table=sql.Identifier(table),
+        points=sql.Identifier(points),
+        polygon=sql.Identifier(polygon)
+    )
+
+    try:
+        count = db.postgis_query(query)
+        return count[0][0]
+
+    except Exception as e:
+        # ...
+        return e
 
 
 def convex_hull(db: database.Database, points, table):
@@ -16,7 +28,7 @@ def convex_hull(db: database.Database, points, table):
 
     try:
         result = db.postgis_query(query)
-        return geom.to_polygon(wkb.loads(result[0][0], hex=True))
+        return to_polygon(wkb.loads(result[0][0], hex=True))
 
     except Exception as e:
         # TODO: format e
