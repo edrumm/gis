@@ -3,7 +3,7 @@ from dotenv import dotenv_values
 from flask import abort, Response, jsonify #, request (maybe required later)
 from flask_cors import cross_origin
 import psycopg2
-import server.database as database
+from server.database import Database
 from server.geometry import *
 from server.functions import *
 
@@ -17,7 +17,7 @@ try:
    pg_password = config.get('PG_PASSWORD')
    pg_db = config.get('PG_DB')
 
-   db = database.Database(pg_host, pg_db, pg_user, pg_password)
+   db = Database(pg_host, pg_db, pg_user, pg_password)
    conn = db.get_conn()
 
 except (Exception, psycopg2.Error) as err:
