@@ -2,6 +2,17 @@ from shapely.geometry import *
 from shapely.geometry.base import BaseGeometry
 
 
+class Layer:
+
+    def __init__(self) -> None:
+        self.points: Point = []
+        self.lines: LineString = []
+        self.polygons: Polygon = []
+
+    # Class to store geometry in each layer
+    # ...
+
+
 # Convert shapely.BaseGeometry to shapely geometry objects
 
 def to_polygon(geom: BaseGeometry) -> Polygon:

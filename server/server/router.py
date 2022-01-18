@@ -1,6 +1,6 @@
 from server import app
 from dotenv import dotenv_values
-from flask import abort, Response, jsonify #, request (maybe required later)
+from flask import abort, Response, jsonify, request
 from flask_cors import cross_origin
 import psycopg2
 from server.database import Database
@@ -27,13 +27,35 @@ except (Exception, psycopg2.Error) as err:
 
 # Testing ONLY
 # Load sample vector dataset from PostGIS
-@app.route('/test')
+#
+# const data = {
+#   points: 'geom',
+#   table: 'nyc_subway_stations'
+# };
+#
+# const options = {
+#   method: 'POST',
+#   headers: {
+#     'Content-Type': 'application/json'
+#   },
+#   body: JSON.stringify(data)
+# };
+#
+# fetch('/test', options)
+# .then(res => res.json())
+# .then(json => console.log(json.body))
+# .catch(err => console.error(err));
+#
+@app.route('/test', methods=['GET', 'POST'])
 @cross_origin()
 def test():
-   points = convex_hull(db, 'geom', 'nyc_subway_stations')
+   input = request.json
+   points = convex_hull(db, input['points'], input['table'])
    app.logger.info(points)
 
-   return str(points)
+   return jsonify({
+      'body': str(points)
+   })
 
 
 @app.route('/count')
