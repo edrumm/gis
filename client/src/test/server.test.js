@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import fetch from 'node-fetch';
 
 describe('Test router', () => {
-    it('Postgres connection', () => {
+    it('Postgres connection', done => {
         const options = {
             method: 'GET',
             headers: {
@@ -12,7 +12,12 @@ describe('Test router', () => {
 
         fetch('http://localhost:5000/', options)
         .then(res => res.json())
-        .then(json => assert.isTrue(json.connection)) // change to json.body?
-        .catch(err => assert.fail(err));
+        .then(json => { 
+            assert.isTrue(json.connected);
+            done();
+        }) // change to json.body?
+        .catch(err => {
+            done(err);
+        });
     });
 });

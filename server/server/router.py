@@ -22,7 +22,7 @@ try:
 
 except (Exception, psycopg2.Error) as err:
    app.logger.error('Could not connect to Postgres: %s', err)
-   abort(Response(str(err)))
+   db = None
 
 
 @app.route('/', methods=['GET'])
