@@ -49,8 +49,8 @@ except (Exception, psycopg2.Error) as err:
 @app.route('/test', methods=['GET', 'POST'])
 @cross_origin()
 def test():
-   input = request.json
-   points = convex_hull(db, input['points'], input['table'])
+   req_body = request.json
+   points = convex_hull(db, req_body['points'], req_body['table'])
    app.logger.info(points)
 
    return jsonify({
@@ -58,37 +58,37 @@ def test():
    })
 
 
-@app.route('/count')
+@app.route('/count', methods=['POST'])
 @cross_origin()
 def count():
    pass
 
 
-@app.route('/convex')
+@app.route('/convex', methods=['POST'])
 @cross_origin()
 def convex():
    pass
 
 
-@app.route('/slope')
+@app.route('/slope', methods=['POST'])
 @cross_origin()
 def slope():
    pass
 
 
-@app.route('/viewshed')
+@app.route('/viewshed', methods=['POST'])
 @cross_origin()
 def viewshed():
    pass
 
 
-@app.route('/upload')
+@app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
    pass
 
 
-@app.route('/download')
+@app.route('/download', methods=['POST'])
 @cross_origin()
 def download():
    pass

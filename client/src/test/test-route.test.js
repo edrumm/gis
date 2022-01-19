@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 */
 
 describe('Test route', () => {
-    it('Performs convex hull', () => {
+    it('Performs convex hull', (done) => {
         const data = {
             points: 'geom',
             table: 'nyc_subway_stations'
@@ -19,11 +19,15 @@ describe('Test route', () => {
             },
             body: JSON.stringify(data)
         };
-        
-        fetch('/test', options)
-        .then(res => res.json())
-        .then(json => assert.isNotEmpty(json.body))
-        .catch(err => assert.fail(err));
+
+        assert.doesNotThrow(() => {
+            fetch('http://localhost:5000/test', options)
+            .then(res => res.json())
+            .then(json => { 
+                assert.isTrue(json.body.includes('POLYGON'));
+                done();
+            }, done);
+        });
     });
 });
 
