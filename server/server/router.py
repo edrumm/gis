@@ -25,27 +25,27 @@ except (Exception, psycopg2.Error) as err:
    abort(Response(str(err)))
 
 
-# Testing ONLY
-# Load sample vector dataset from PostGIS
-#
-# const data = {
-#   points: 'geom',
-#   table: 'nyc_subway_stations'
-# };
-#
-# const options = {
-#   method: 'POST',
-#   headers: {
-#     'Content-Type': 'application/json'
-#   },
-#   body: JSON.stringify(data)
-# };
-#
-# fetch('/test', options)
-# .then(res => res.json())
-# .then(json => console.log(json.body))
-# .catch(err => console.error(err));
-#
+""" Testing ONLY
+Load sample vector dataset from PostGIS
+
+const data = {
+  points: 'geom',
+  table: 'nyc_subway_stations'
+};
+
+const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data)
+};
+
+fetch('/test', options)
+.then(res => res.json())
+.then(json => console.log(json.body))
+.catch(err => console.error(err));
+"""
 @app.route('/test', methods=['GET', 'POST'])
 @cross_origin()
 def test():
@@ -61,13 +61,23 @@ def test():
 @app.route('/count', methods=['POST'])
 @cross_origin()
 def count():
+   # Need to think about how to identify a polygon for this operation
    pass
 
 
 @app.route('/convex', methods=['POST'])
 @cross_origin()
 def convex():
-   pass
+   req_body = request.json
+   geom = convex_hull(db, req_body['points'], req_body['table'])
+
+   coords = [(xy[0], xy[1]) for xy in geom.exterior.coords]
+
+   # Returns in JS as [[x, y], [x, y], ...]
+   return jsonify({
+      'body': coords
+   })
+
 
 
 @app.route('/slope', methods=['POST'])

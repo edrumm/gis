@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@babel/register": "^7.16.9",
     "@testing-library/jest-dom": "^5.14.1",
@@ -18,6 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "flask-start": "cd ../server && venv\\Scripts\\activate && flask run",
     "build": "react-scripts build",
     "test": "mocha src/test/*.test.js --reporter spec --require @babel/register",
     "eject": "react-scripts eject"

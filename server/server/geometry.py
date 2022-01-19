@@ -9,11 +9,13 @@ class Layer:
         self.lines: LineString = []
         self.polygons: Polygon = []
 
+    # Idea:
     # Class to store geometry in each layer
     # ...
 
 
 # Convert shapely.BaseGeometry to shapely geometry objects
+# is this needed? as just for IDE suggestions
 
 def to_polygon(geom: BaseGeometry) -> Polygon:
     return geom
