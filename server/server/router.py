@@ -1,3 +1,4 @@
+from itsdangerous import json
 from server import app
 from dotenv import dotenv_values
 from flask import abort, Response, jsonify, request
@@ -18,11 +19,20 @@ try:
    pg_db = config.get('PG_DB')
 
    db = Database(pg_host, pg_db, pg_user, pg_password)
-   conn = db.get_conn()
 
 except (Exception, psycopg2.Error) as err:
    app.logger.error('Could not connect to Postgres: %s', err)
    abort(Response(str(err)))
+
+
+@app.route('/', methods=['GET'])
+@cross_origin()
+def status():
+   return jsonify({
+      'connected': False # change to body?
+   }) if db is None else jsonify({
+      'connected': True
+   })
 
 
 """ Testing ONLY

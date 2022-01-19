@@ -25,7 +25,6 @@ describe('Test functions', () => {
             .then(res => res.json())
             .then(json => { 
                 assert.isNotEmpty(json.body);
-                console.log(json.body)
                 done();
             }, done);
         });
