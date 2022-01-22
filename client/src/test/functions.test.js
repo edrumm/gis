@@ -24,6 +24,7 @@ describe('Test functions', () => {
             fetch('http://localhost:5000/convex', options)
             .then(res => res.json())
             .then(json => { 
+                console.log(json.body);
                 assert.isNotEmpty(json.body);
                 done();
             }, done);

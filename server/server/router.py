@@ -1,4 +1,3 @@
-from itsdangerous import json
 from server import app
 from dotenv import dotenv_values
 from flask import abort, Response, jsonify, request
@@ -87,7 +86,6 @@ def convex():
    return jsonify({
       'body': coords
    })
-
 
 
 @app.route('/slope', methods=['POST'])

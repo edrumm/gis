@@ -2,15 +2,17 @@ from shapely.geometry import *
 from shapely.geometry.base import BaseGeometry
 
 
+# https://gis.stackexchange.com/questions/114644/adding-a-property-attribute-to-a-geometry-in-shapely-fiona
+# http://132.72.155.230:3838/r/vector-layers.html
+
+
 class Layer:
 
-    def __init__(self) -> None:
-        self.points: Point = []
-        self.lines: LineString = []
-        self.polygons: Polygon = []
+    def __init__(self, name, srid) -> None:
+        self.geometry: BaseGeometry = []
+        self.srid = srid
+        self.name = name
 
-    # Idea:
-    # Class to store geometry in each layer
     # ...
 
 

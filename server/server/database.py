@@ -1,4 +1,7 @@
 import psycopg2 as pg
+from psycopg2 import sql
+from server.geometry import Layer
+from shapely import wkb
 
 
 class Database:
@@ -11,7 +14,7 @@ class Database:
         return conn
 
     def postgis_query(self, sql):
-        with self.conn.cursor() as cur:
+        with self.new_cursor() as cur:
             cur.execute(sql)
             rows = cur.fetchall()
 
@@ -22,3 +25,25 @@ class Database:
 
     def new_cursor(self):
         return self.conn.cursor()
+
+    # Needs test
+    def postgis_insert_new(self, layer: Layer):
+        with self.new_cursor() as cur:
+            create_query = sql.SQL('CREATE TABLE IF NOT EXISTS {name} ( id SERIAL PRIMARY KEY, geom geometry NOT NULL )').format(
+                name=sql.Identifier(layer.name)
+            )    
+
+            cur.execute(create_query)
+            self.conn.commit()  
+
+            for geom in layer.geometry:
+                query = sql.SQL('INSERT INTO {name}(geom) VALUES ({wkb_value})').format(
+                    name=sql.Identifier(layer.name),
+                    wkb_value=sql.Identifier(wkb.dumps(geom, hex=True, srid=layer.srid))
+                )
+
+                cur.execute(query)
+                self.conn.commit()  
+
+    def postgis_insert(self, table):
+        pass
