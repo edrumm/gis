@@ -3,7 +3,6 @@ from dotenv import dotenv_values
 from flask import jsonify, request
 from flask_cors import cross_origin
 import psycopg2
-from typing import List
 from server.database import Database
 from server.geometry import *
 from server.functions import *
@@ -20,7 +19,8 @@ try:
 
    db = Database(pg_host, pg_db, pg_user, pg_password)
 
-   layers: List[Layer] = []
+   # TODO:
+   layers = {}
 
 except (Exception, psycopg2.Error) as err:
    app.logger.error('Could not connect to Postgres: %s', err)
@@ -44,7 +44,7 @@ def test():
       app.logger.info(count_points_in_polygon(db, 1, 'nyc_subway_stations', 'nyc_polygon'))
    except Exception as e:
       return str(e)
-      
+
    """
    req_body = request.json
    points = convex_hull(db, req_body['points'], req_body['table'])
@@ -61,11 +61,10 @@ def test():
 @cross_origin()
 def count():
    req_body = request.json
-   result = count_points_in_polygon(db, layers[req_body['polygon']], req_body['table'], req_body['sub_table'])
+   result = count_points_in_polygon(db, req_body['polygon'], req_body['points'], req_body['sub_table'])
 
    return jsonify({
       'body': result,
-      'layer': None # Later ?
    })
 
 
@@ -79,19 +78,12 @@ def convex():
 
    app.logger.info(coords)
 
-   layer = Layer('convex_hull_0', 0) # add SRID
-   layer.geom_id.append(result['id'])
-
-   layers[layer.name] = layer
+   # Add to layers
 
    # Returns in JS as [[x, y], [x, y], ...]
    return jsonify({
       'body': coords,
-      'layer': {
-         'name': layer.name,
-         'srid': layer.srid,
-         'id': layer.geom_id
-      }
+      'layer': None
    })
 
 

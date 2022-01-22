@@ -6,9 +6,9 @@ from shapely.geometry import Polygon
 
 
 # Vector
-def count_points_in_polygon(db: Database, polygon, table, sub_table) -> int:
-    query = sql.SQL('SELECT count(*) FROM {table} WHERE ST_Intersects(geom, (SELECT geom FROM {polygon} WHERE id = {name}))').format(
-        table=sql.Identifier(table),
+def count_points_in_polygon(db: Database, polygon, points, sub_table) -> int:
+    query = sql.SQL('SELECT count(*) FROM {points} WHERE ST_Intersects(geom, (SELECT geom FROM {polygon} WHERE id = {name}))').format(
+        points=sql.Identifier(points),
         polygon=sql.Identifier(sub_table),
         name=sql.Literal(polygon)
     )
