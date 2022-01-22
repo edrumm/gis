@@ -34,27 +34,6 @@ def status():
    })
 
 
-""" Testing ONLY
-Load sample vector dataset from PostGIS
-
-const data = {
-  points: 'geom',
-  table: 'nyc_subway_stations'
-};
-
-const options = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(data)
-};
-
-fetch('/test', options)
-.then(res => res.json())
-.then(json => console.log(json.body))
-.catch(err => console.error(err));
-"""
 @app.route('/test', methods=['GET', 'POST'])
 @cross_origin()
 def test():

@@ -2,6 +2,7 @@ import psycopg2 as pg
 from psycopg2 import sql
 from server.geometry import Layer
 from shapely import wkb
+from shapely.geometry.base import BaseGeometry
 
 
 class Database:
@@ -26,7 +27,6 @@ class Database:
     def new_cursor(self):
         return self.conn.cursor()
 
-    # Needs test
     def postgis_insert_new(self, layer: Layer):
         with self.new_cursor() as cur:
             create_query = sql.SQL('CREATE TABLE IF NOT EXISTS {name} ( id SERIAL PRIMARY KEY, geom geometry NOT NULL )').format(
@@ -37,13 +37,28 @@ class Database:
             self.conn.commit()  
 
             for geom in layer.geometry:
-                query = sql.SQL('INSERT INTO {name}(geom) VALUES ({wkb_value})').format(
+                query = sql.SQL('INSERT INTO {name} (geom) VALUES ({value})').format(
                     name=sql.Identifier(layer.name),
-                    wkb_value=sql.Identifier(wkb.dumps(geom, hex=True, srid=layer.srid))
+                    value=sql.Literal(wkb.dumps(geom, hex=True, srid=layer.srid))
                 )
 
                 cur.execute(query)
-                self.conn.commit()  
+                self.conn.commit()
 
-    def postgis_insert(self, table):
-        pass
+    def postgis_append(self, layer: Layer, geom: BaseGeometry):
+        with self.new_cursor() as cur:
+            query = sql.SQL('INSERT INTO {name} (geom) VALUES ({value})').format(
+                name=sql.Identifier(layer.name),
+                value=sql.Literal(wkb.dumps(geom, hex=True, srid=layer.srid))
+            )
+
+            cur.execute()
+            self.conn.commit()
+
+    def postgis_drop_layer(self, layer: Layer):
+        with self.new_cursor() as cur:
+            query = sql.SQL('DROP TABLE {name}').format(
+                name=sql.Identifier(layer.name)
+            )
+
+            cur.execute()
