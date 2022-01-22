@@ -8,12 +8,11 @@ from shapely.geometry.base import BaseGeometry
 
 class Layer:
 
-    def __init__(self, name, srid) -> None:
-        self.geometry: BaseGeometry = []
+    def __init__(self, name, srid):
+        self.geom_id = []
         self.srid = srid
         self.name = name
 
-    # ...
 
 
 # Convert shapely.BaseGeometry to shapely geometry objects
