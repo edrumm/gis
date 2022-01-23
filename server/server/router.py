@@ -7,8 +7,9 @@ from server.database import Database
 from server.geometry import *
 from server.functions import *
 
+# GDAL
+# pip install gdal/GDAL-3.4.1-pp38-pypy38_pp73-win_amd64.whl
 
-# DB init
 try:
    config = dotenv_values('.env')
 
@@ -31,7 +32,7 @@ except (Exception, psycopg2.Error) as err:
 @cross_origin()
 def status():
    return jsonify({
-      'connected': False # change to body?
+      'connected': False
    }) if db is None else jsonify({
       'connected': True
    })
@@ -60,31 +61,47 @@ def test():
 @app.route('/count', methods=['POST'])
 @cross_origin()
 def count():
-   req_body = request.json
-   result = count_points_in_polygon(db, req_body['polygon'], req_body['points'], req_body['sub_table'])
+   try:
+      req_body = request.json
+      result = count_points_in_polygon(db, req_body['polygon'], req_body['points'], req_body['sub_table'])
 
-   return jsonify({
-      'body': result,
-   })
+      return jsonify({
+         'body': result,
+         'layer': None,
+         'err': None
+      })
+
+   except Exception as e:
+      return jsonify({
+         'body': None,
+         'layer': None,
+         'err': str(e)
+      })
 
 
 @app.route('/convex', methods=['POST'])
 @cross_origin()
 def convex():
-   req_body = request.json
-   result = convex_hull(db, req_body['points'], req_body['table'])
+   try:
+      req_body = request.json
+      result = convex_hull(db, req_body['points'], req_body['table'])
 
-   coords = [(xy[0], xy[1]) for xy in result['geom'].exterior.coords]
+      coords = [(xy[0], xy[1]) for xy in result.exterior.coords]
 
-   app.logger.info(coords)
+      # Add to layers
 
-   # Add to layers
+      return jsonify({
+         'body': coords,
+         'layer': None,
+         'err': None
+      })
 
-   # Returns in JS as [[x, y], [x, y], ...]
-   return jsonify({
-      'body': coords,
-      'layer': None
-   })
+   except Exception as e:
+      return jsonify({
+         'body': None,
+         'layer': None,
+         'err': str(e)
+      })
 
 
 @app.route('/slope', methods=['POST'])

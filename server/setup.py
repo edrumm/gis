@@ -7,7 +7,9 @@ setup(
     install_requires=[
         'flask',
         'flask-cors',
+        'geojson',
         'psycopg2',
+        'pyshp',
         'pytest',
         'python-dotenv',
         'shapely',

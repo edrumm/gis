@@ -13,31 +13,18 @@ def count_points_in_polygon(db: Database, polygon, points, sub_table) -> int:
         name=sql.Literal(polygon)
     )
 
-    try:
-        count = db.postgis_query(query)
-        return count[0][0]
-
-    except Exception as e:
-        # ...
-        return e
+    count = db.postgis_query(query)
+    return count[0][0]
 
 
-def convex_hull(db: Database, points, table):
+def convex_hull(db: Database, points, table) -> Polygon:
     query = sql.SQL('SELECT ST_ConvexHull(ST_Collect({points})) FROM {table}').format(
         points=sql.Identifier(points),
         table=sql.Identifier(table)
     )
 
-    try:
-        result = db.postgis_query(query)
-        return { 
-            'geom': to_polygon(wkb.loads(result[0][0], hex=True)),
-            'id': 0 # TODO - get from db
-        }
-
-    except Exception as e:
-        # TODO: format e
-        return e
+    result = db.postgis_query(query)
+    return wkb.loads(result[0][0], hex=True)
 
 
 # Raster
