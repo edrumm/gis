@@ -1,3 +1,5 @@
+import geojson, pyshp, shapely
+
 def upload():
     pass
 
@@ -25,9 +27,9 @@ def write_geojson():
 # CSV?
 
 
-def read_tif():
+def read_geotiff():
     pass
 
 
-def write_tiff():
+def write_geotiff():
     pass

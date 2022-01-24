@@ -125,7 +125,7 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
-/server/gdal
+*.whl
 
 # Coverage reports
 htmlcov/
