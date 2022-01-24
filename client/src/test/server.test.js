@@ -13,9 +13,9 @@ describe('Test router', () => {
         fetch('http://localhost:5000/', options)
         .then(res => res.json())
         .then(json => { 
-            assert.isTrue(json.connected);
+            assert.isTrue(json.body);
             done();
-        }) // change to json.body?
+        })
         .catch(err => {
             done(err);
         });

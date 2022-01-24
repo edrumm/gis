@@ -1,7 +1,7 @@
 from setuptools import setup
 import os
 
-# not working
+# Path to GDAL wheel
 path = os.path.join('file://localhost/', os.getcwd(), 'GDAL-3.4.1-cp38-cp38-win_amd64.whl')
 
 setup(

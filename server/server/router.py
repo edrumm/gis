@@ -32,9 +32,9 @@ except (Exception, psycopg2.Error) as err:
 @cross_origin()
 def status():
    return jsonify({
-      'connected': False
+      'body': False
    }) if db is None else jsonify({
-      'connected': True
+      'body': True
    })
 
 
