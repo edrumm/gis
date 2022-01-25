@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 */
 
 describe('Test functions', () => {
-    it('Convex hull', (done) => {
+    it('Convex hull', () => {
         const data = {
             points: 'geom',
             table: 'nyc_subway_stations'
@@ -23,14 +23,11 @@ describe('Test functions', () => {
         assert.doesNotThrow(() => {
             fetch('http://localhost:5000/convex', options)
             .then(res => res.json())
-            .then(json => { 
-                assert.isNotEmpty(json.body);
-                done();
-            }, done);
+            .then(json => assert.equal(json.body.coordinates[0][0], [563292.1172580556, 4484900.921251608]))
         });
-    });
+    }).timeout(5000);
 
-    it('Count points in polygon', done => {
+    it('Count points in polygon', () => {
         const data = {
             polygon: 1,
             points: 'nyc_subway_stations',
@@ -48,13 +45,9 @@ describe('Test functions', () => {
         assert.doesNotThrow(() => {
             fetch('http://localhost:5000/count', options)
             .then(res => res.json())
-            .then(json => { 
-                assert.equal(json.body, 491);
-                done();
-            }, done);
+            .then(json => assert.equal(json.body, 491));
         });
-
-    });
+    }).timeout(5000);
 });
 
 // ..

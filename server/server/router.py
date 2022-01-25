@@ -4,7 +4,6 @@ from flask import jsonify, request
 from flask_cors import cross_origin
 import psycopg2
 from server.database import Database
-from server.geometry import *
 from server.functions import *
 
 # GDAL
@@ -19,9 +18,6 @@ try:
    pg_db = config.get('PG_DB')
 
    db = Database(pg_host, pg_db, pg_user, pg_password)
-
-   # TODO:
-   layers = {}
 
 except (Exception, psycopg2.Error) as err:
    app.logger.error('Could not connect to Postgres: %s', err)
@@ -42,7 +38,8 @@ def status():
 @cross_origin()
 def test():
    try:
-      app.logger.info(count_points_in_polygon(db, 1, 'nyc_subway_stations', 'nyc_polygon'))
+      ch = convex_hull(db, 'geom', 'nyc_subway_stations')
+      return jsonify(ch)
    except Exception as e:
       return str(e)
 
@@ -55,7 +52,6 @@ def test():
       'body': str(points)
    })
    """
-   return "200 - OK"
 
 
 @app.route('/count', methods=['POST'])
@@ -86,12 +82,8 @@ def convex():
       req_body = request.json
       result = convex_hull(db, req_body['points'], req_body['table'])
 
-      coords = [(xy[0], xy[1]) for xy in result.exterior.coords]
-
-      # Add to layers
-
       return jsonify({
-         'body': coords,
+         'body': result,
          'layer': None,
          'err': None
       })

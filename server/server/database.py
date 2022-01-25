@@ -47,7 +47,7 @@ class Database:
                 value=sql.Literal(wkb.dumps(geom, hex=True, srid=srid))
             )
 
-            cur.execute()
+            cur.execute(query)
             self.conn.commit()
 
     def postgis_drop_layer(self, name):
