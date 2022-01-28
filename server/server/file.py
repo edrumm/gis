@@ -1,11 +1,5 @@
 import geojson, pyshp, shapely
-
-def upload():
-    pass
-
-
-def download():
-    pass
+from osgeo import gdal
 
 
 def read_shp():
@@ -32,4 +26,12 @@ def read_geotiff():
 
 
 def write_geotiff():
+    pass
+
+
+def read_erdas_img():
+    pass
+
+
+def write_erdas_img():
     pass

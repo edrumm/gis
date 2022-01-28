@@ -4,10 +4,9 @@ from flask import jsonify, request
 from flask_cors import cross_origin
 import psycopg2
 from server.database import Database
+from server.file import read_erdas_img, read_geojson, read_geotiff, read_shp
 from server.functions import *
 
-# GDAL
-# pip install gdal/GDAL-3.4.1-pp38-pypy38_pp73-win_amd64.whl
 
 try:
    config = dotenv_values('.env')
@@ -34,6 +33,7 @@ def status():
    })
 
 
+# Test route only, not to be used in production
 @app.route('/test', methods=['GET', 'POST'])
 @cross_origin()
 def test():
@@ -111,7 +111,34 @@ def viewshed():
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
-   pass
+   req_body = request.json
+
+   # Placeholder
+   result = None
+
+   if '.shp' in req_body['filename']:
+      read_shp() # ...
+
+   elif '.geojson' in req_body['filename']:
+      read_geojson()
+
+   elif '.tiff' in req_body['filename']:
+      read_geotiff()
+
+   elif '.img' in req_body['filename']:
+      read_erdas_img()
+
+   else:
+      return jsonify({
+         'body': None,
+         'err': 'Invalid or unsupported file format'
+      })
+
+   return jsonify({
+      'body': result,
+      'layer': None,
+      'err': None
+   })
 
 
 @app.route('/download', methods=['POST'])
