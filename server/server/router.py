@@ -4,7 +4,7 @@ from flask import jsonify, request
 from flask_cors import cross_origin
 import psycopg2
 from server.database import Database
-from server.file import read_erdas_img, read_geojson, read_geotiff, read_shp
+from server.file import *
 from server.functions import *
 
 
