@@ -7,7 +7,6 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 import server.router
 
-
 # https://stackoverflow.com/questions/20001229/how-to-get-posted-json-in-flask
 # https://stackoverflow.com/questions/13081532/return-json-response-from-flask-view
 @app.route('/')

@@ -1,7 +1,6 @@
 from server.database import Database
 from psycopg2 import sql
 from shapely import wkb # maybe
-from osgeo import gdal
 import geojson
 
 

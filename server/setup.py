@@ -2,7 +2,9 @@ from setuptools import setup
 import os
 
 # Path to GDAL wheel
-path = os.path.join('file://localhost/', os.getcwd(), 'GDAL-3.4.1-cp38-cp38-win_amd64.whl')
+# gdal_path = os.path.join('file://localhost/', os.getcwd(), 'GDAL-3.4.1-cp38-cp38-win_amd64.whl')
+
+# fiona_path = os.path.join('file://localhost/', os.getcwd(), 'Fiona-1.8.20-cp38-cp38-win_amd64.whl')
 
 setup(
     name='server',
@@ -11,15 +13,13 @@ setup(
     install_requires=[
         'flask',
         'flask-cors',
-        'gdal',
         'geojson',
+        'pillow',
         'psycopg2',
         'pyshp',
         'pytest',
+        'python-dev-tools',
         'python-dotenv',
         'shapely',
-    ],
-    dependency_links=[
-        path,
     ],
 )

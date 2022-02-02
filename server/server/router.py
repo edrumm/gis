@@ -126,7 +126,7 @@ def upload():
       read_geotiff()
 
    elif '.img' in req_body['filename']:
-      read_erdas_img()
+      read_img()
 
    else:
       return jsonify({
