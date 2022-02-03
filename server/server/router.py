@@ -1,8 +1,10 @@
-from server import app
+from server import app, upload_dir
 from dotenv import dotenv_values
-from flask import jsonify, request
+from flask import jsonify, request, session
 from flask_cors import cross_origin
 import psycopg2
+import os
+
 from server.database import Database
 from server.file import *
 from server.functions import *
@@ -113,6 +115,9 @@ def viewshed():
 def upload():
    req_body = request.json
 
+   if not os.path.isdir(upload_dir):
+      os.mkdir(upload_dir)
+
    # Placeholder
    result = None
 
@@ -122,7 +127,7 @@ def upload():
    elif '.geojson' in req_body['filename']:
       read_geojson()
 
-   elif '.tiff' in req_body['filename']:
+   elif '.tiff' in req_body['filename'] or '.tif' in req_body['filename']:
       read_geotiff()
 
    elif '.img' in req_body['filename']:
