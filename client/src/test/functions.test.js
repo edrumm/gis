@@ -2,7 +2,12 @@ import { assert } from 'chai';
 import fetch from 'node-fetch';
 
 /*
-    Change lockfile test command to /node_modules/../mocha instead of mocha ... ?
+    TO RUN:
+    Add
+    
+    "type": "module",
+
+    to package.json
 */
 
 describe('Test functions', () => {

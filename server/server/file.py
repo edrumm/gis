@@ -1,6 +1,5 @@
 import geojson, shapely, shapefile
 from PIL import Image
-from werkzeug.utils import secure_filename
 
 # Neither working
 # from osgeo import gdal, ogr

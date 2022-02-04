@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
+
   "proxy": "http://localhost:5000",
   "dependencies": {
     "@babel/register": "^7.16.9",

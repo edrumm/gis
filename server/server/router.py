@@ -2,6 +2,7 @@ from server import app, upload_dir
 from dotenv import dotenv_values
 from flask import jsonify, request, session
 from flask_cors import cross_origin
+from werkzeug.utils import secure_filename
 import psycopg2
 import os
 
@@ -113,14 +114,34 @@ def viewshed():
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
-   req_body = request.json
+   # req_body = request.json
 
-   if not os.path.isdir(upload_dir):
-      os.mkdir(upload_dir)
+   try:
+
+      if not os.path.isdir(upload_dir):
+         os.mkdir(upload_dir)
+
+      file = request.files['file']
+
+      """filename = secure_filename(file.filename)
+
+      destination = os.path.join(upload_dir, '/', filename)
+      file.save(destination)
+
+      session['uploadFilePath'] = destination"""
+
+   except Exception as e:
+      app.logger.error(e)
+
+      return jsonify({
+         'body': None,
+         'err': str(e)
+      })
 
    # Placeholder
    result = None
 
+   """
    if '.shp' in req_body['filename']:
       read_shp() # ...
 
@@ -138,6 +159,7 @@ def upload():
          'body': None,
          'err': 'Invalid or unsupported file format'
       })
+   """
 
    return jsonify({
       'body': result,
