@@ -114,8 +114,6 @@ def viewshed():
    pass
 
 
-# Working but need to fix path so it goes to C:/<this project>/upload
-# instead of C:/upload
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
@@ -128,9 +126,13 @@ def upload():
 
       file = request.files['file']
 
-      filename = secure_filename(file.filename)
+      data = file.read()
 
-      file.save(os.path.join(app.config['UPLOAD_DIR'], filename))
+      file.close()
+
+      # filename = secure_filename(file.filename)
+
+      # file.save(os.path.join(app.config['UPLOAD_DIR'], filename))
 
       # session['uploadFilePath'] = destination
 
@@ -143,7 +145,7 @@ def upload():
       })
 
    # Placeholder
-   result = None
+   result = True
 
    """
    if '.shp' in req_body['filename']:
@@ -166,7 +168,7 @@ def upload():
    """
 
    return jsonify({
-      'body': result,
+      'body': str(data),
       'layer': None,
       'err': None
    })

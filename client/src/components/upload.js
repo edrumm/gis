@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './style/upload.css';
-import './layer';
-import Layer from './layer';
+import Swal from 'sweetalert2';
+// import Layer from './layer';
 
 const Upload = () => {
 
@@ -11,6 +11,12 @@ const Upload = () => {
         event.preventDefault();
 
         if (file == null) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'No file selected',
+                icon: 'error',
+                confirmButtonText: 'Close'
+            });
             return;
         }
         

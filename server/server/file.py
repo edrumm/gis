@@ -23,7 +23,8 @@ def write_geojson():
     pass
 
 
-# CSV?
+def csv():
+    pass
 
 
 def read_geotiff():
