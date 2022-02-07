@@ -5,15 +5,17 @@ import Layer from './layer';
 
 const Upload = () => {
 
-    const [fileName, setFileName] = useState('');
-    const [file, setFile] = useState('');
+    const [file, setFile] = useState(null);
 
     const send = event => {
         event.preventDefault();
+
+        if (file == null) {
+            return;
+        }
         
         const data = new FormData();
         data.append("file", file);
-        data.append("filename", fileName);
 
         const options = {
             method: 'POST',
@@ -41,12 +43,6 @@ const Upload = () => {
                 File:
                 <input type="file" onChange={e => { 
                     setFile(e.target.files[0]);
-                }} />
-            </label>
-            <label>
-                Name:
-                <input type="text" onChange={e => { 
-                    setFileName(e.target.value);
                 }} />
             </label>
             <br/>
