@@ -5,8 +5,6 @@ import Layer from './layer';
 
 const Upload = () => {
 
-    // https://medium.com/excited-developers/file-upload-with-react-flask-e115e6f2bf99
-
     const [fileName, setFileName] = useState('');
     const [file, setFile] = useState('');
 
@@ -34,13 +32,8 @@ const Upload = () => {
         .catch(err => console.error(err)) // placeholder, output error to interface
     };
 
-    const test = event => {
-        event.preventDefault();
-
-        console.log(file.name);
-        console.log(file);
-    };
-
+    // VERY rough interface to test
+    // will fix later
     return (
         <>
         <form className="upload-form" onSubmit={send}>
@@ -48,7 +41,12 @@ const Upload = () => {
                 File:
                 <input type="file" onChange={e => { 
                     setFile(e.target.files[0]);
-                    setFileName(file.name);
+                }} />
+            </label>
+            <label>
+                Name:
+                <input type="text" onChange={e => { 
+                    setFileName(e.target.value);
                 }} />
             </label>
             <br/>

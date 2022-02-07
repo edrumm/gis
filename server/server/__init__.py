@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_cors import CORS, cross_origin
+import os
 
 app = Flask(__name__)
 cors = CORS(app, expose_headers='Authorization')
-upload_dir = '/upload'
-app.config['UPLOAD_DIR'] = upload_dir
+app.config['UPLOAD_DIR'] = os.path.join(os.getcwd(), '/upload')
 
 import server.router
 

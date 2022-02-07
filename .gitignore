@@ -132,3 +132,6 @@ htmlcov/
 .coverage
 .coverage.*
 *,cover
+
+# Upload directory
+server/server/upload

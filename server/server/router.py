@@ -1,4 +1,4 @@
-from server import app, upload_dir
+from server import app
 from dotenv import dotenv_values
 from flask import jsonify, request, session
 from flask_cors import cross_origin
@@ -24,6 +24,9 @@ try:
 except (Exception, psycopg2.Error) as err:
    app.logger.error('Could not connect to Postgres: %s', err)
    db = None
+
+
+ALLOWED_EXTENSIONS = set(['shp', 'tiff', 'tif', 'geojson', 'img', 'txt'])
 
 
 @app.route('/', methods=['GET'])
@@ -111,6 +114,8 @@ def viewshed():
    pass
 
 
+# Working but need to fix path so it goes to C:/<this project>/upload
+# instead of C:/upload
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
@@ -118,17 +123,16 @@ def upload():
 
    try:
 
-      if not os.path.isdir(upload_dir):
-         os.mkdir(upload_dir)
+      if not os.path.isdir(app.config['UPLOAD_DIR']):
+         os.mkdir(app.config['UPLOAD_DIR'])
 
       file = request.files['file']
 
-      """filename = secure_filename(file.filename)
+      filename = secure_filename(file.filename)
 
-      destination = os.path.join(upload_dir, '/', filename)
-      file.save(destination)
+      file.save(os.path.join(app.config['UPLOAD_DIR'], filename))
 
-      session['uploadFilePath'] = destination"""
+      # session['uploadFilePath'] = destination
 
    except Exception as e:
       app.logger.error(e)
