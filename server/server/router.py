@@ -26,7 +26,7 @@ except (Exception, psycopg2.Error) as err:
    db = None
 
 
-ALLOWED_EXTENSIONS = set(['shp', 'tiff', 'tif', 'geojson', 'img', 'txt'])
+ALLOWED_EXTENSIONS = set(['shp', 'shx', 'dbf', 'prj', 'zip', 'tiff', 'tif', 'geojson', 'img'])
 
 
 @app.route('/', methods=['GET'])
@@ -117,8 +117,6 @@ def viewshed():
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
-   # req_body = request.json
-
    try:
 
       if not os.path.isdir(app.config['UPLOAD_DIR']):
@@ -148,16 +146,16 @@ def upload():
    result = True
 
    """
-   if '.shp' in req_body['filename']:
+   if '.shp' in file.filename:
       read_shp() # ...
 
-   elif '.geojson' in req_body['filename']:
+   elif '.geojson' in file.filename:
       read_geojson()
 
-   elif '.tiff' in req_body['filename'] or '.tif' in req_body['filename']:
+   elif '.tiff' in file.filename or '.tif' file.filename:
       read_geotiff()
 
-   elif '.img' in req_body['filename']:
+   elif '.img' file.filename:
       read_img()
 
    else:

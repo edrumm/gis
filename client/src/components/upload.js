@@ -7,15 +7,21 @@ const Upload = () => {
 
     const [file, setFile] = useState(null);
 
+    const Popup = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
+
     const send = event => {
         event.preventDefault();
 
         if (file == null) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'No file selected',
+            Popup.fire({
+                title: 'No file selected',
                 icon: 'error',
-                confirmButtonText: 'Close'
             });
             return;
         }
@@ -32,13 +38,28 @@ const Upload = () => {
         .then(res => res.json())
         .then(json => {
             if (json.err) {
-                console.error(json.err);
+                Popup.fire({
+                    title: json.err,
+                    icon: 'error',
+                });
             } else {
-                console.log(json.body);
+                Popup.fire({
+                    title: 'File uploaded',
+                    icon: 'success',
+                });
+
+                console.log(json.body)
             }
         }) // placeholder, save returned geom
-        .catch(err => console.error(err)) // placeholder, output error to interface
+        .catch(err => {
+            Popup.fire({
+                title: err,
+                icon: 'error',
+            });
+        });
     };
+
+    const supportedTypes = '.shp, .shx, .dbf, .prj, .zip, .geojson, .tiff, .tif, .img';
 
     // VERY rough interface to test
     // will fix later
@@ -47,7 +68,7 @@ const Upload = () => {
         <form className="upload-form" onSubmit={send}>
             <label>
                 File:
-                <input type="file" onChange={e => { 
+                <input type="file" accept={supportedTypes} onChange={e => { 
                     setFile(e.target.files[0]);
                 }} />
             </label>
