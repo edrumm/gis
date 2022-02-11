@@ -1,0 +1,35 @@
+:root {
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+.upload-form {
+    padding: 1%;
+}
+
+.upload-form label {
+    font-weight: bold;
+    padding: 0.5%;
+}
+
+.upload-form input {
+    padding: 0.1%;
+}
+
+.submit-button:hover {
+    transform: scale(1.5);
+    -o-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    -moz-transform: scale(1.5);
+    -ms-transform: scale(1.5);
+}
+
+.submit-button {
+    padding: 3%;
+    border: none;
+    border-radius: 20%;
+    transition: 0.5s ease-in-out 0.5s;
+    -o-transition: 0.5s ease-in-out 0.5s;
+    -webkit-transition: 0.5s ease-in-out 0.5s;
+    -moz-transition: 0.5s ease-in-out 0.5s;
+}

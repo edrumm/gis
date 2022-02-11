@@ -44,8 +44,8 @@ def status():
 @cross_origin()
 def test():
    try:
-      ch = convex_hull(db, 'geom', 'nyc_subway_stations')
-      return jsonify(ch)
+      geom = convex_hull(db, 'geom', 'nyc_subway_stations')
+      return jsonify(geom)
    except Exception as e:
       return str(e)
 
@@ -86,10 +86,10 @@ def count():
 def convex():
    try:
       req_body = request.json
-      result = convex_hull(db, req_body['points'], req_body['table'])
+      geom = convex_hull(db, req_body['points'], req_body['table'])
 
       return jsonify({
-         'body': result,
+         'body': geom,
          'layer': None,
          'err': None
       })
@@ -124,7 +124,8 @@ def upload():
 
       file = request.files['file']
 
-      data = file.read()
+      # Tidy output, move to file.py
+      geom = geojson.loads(file.read())
 
       file.close()
 
@@ -141,9 +142,6 @@ def upload():
          'body': None,
          'err': str(e)
       })
-
-   # Placeholder
-   result = True
 
    """
    if '.shp' in file.filename:
@@ -166,8 +164,8 @@ def upload():
    """
 
    return jsonify({
-      'body': str(data),
-      'layer': None,
+      'body': geom,
+      'layer': file.filename,
       'err': None
    })
 

@@ -67,13 +67,13 @@ const Upload = () => {
         <>
         <form className="upload-form" onSubmit={send}>
             <label>
-                File:
+                Upload<br/>
                 <input type="file" accept={supportedTypes} onChange={e => { 
                     setFile(e.target.files[0]);
                 }} />
             </label>
             <br/>
-            <input type="submit" value="Upload"/>
+            <input className='submit-button' type="submit" value="Upload"/>
         </form>
         </>
     );
