@@ -3,6 +3,7 @@ from dotenv import dotenv_values
 from flask import jsonify, request, session
 from flask_cors import cross_origin
 from werkzeug.utils import secure_filename
+from shapely.geometry import shape
 import psycopg2
 import os
 
@@ -124,10 +125,11 @@ def upload():
 
       file = request.files['file']
 
-      # Tidy output, move to file.py
-      geom = geojson.loads(file.read())
+      geom = read_geojson(file)
 
-      file.close()
+      layer_name = file.filename.partition('.')[0]
+
+      # db.postgis_insert_new(layer_name, 26918, geom)
 
       # filename = secure_filename(file.filename)
 
@@ -150,7 +152,7 @@ def upload():
    elif '.geojson' in file.filename:
       read_geojson()
 
-   elif '.tiff' in file.filename or '.tif' file.filename:
+   elif '.tiff' in file.filename or '.tif' in file.filename:
       read_geotiff()
 
    elif '.img' file.filename:
@@ -165,7 +167,7 @@ def upload():
 
    return jsonify({
       'body': geom,
-      'layer': file.filename,
+      'layer': layer_name,
       'err': None
    })
 

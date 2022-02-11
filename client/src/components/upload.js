@@ -70,7 +70,7 @@ const Upload = () => {
                 Upload<br/>
                 <input type="file" accept={supportedTypes} onChange={e => { 
                     setFile(e.target.files[0]);
-                }} />
+                }}/>
             </label>
             <br/>
             <input className='submit-button' type="submit" value="Upload"/>

@@ -1,5 +1,8 @@
-import geojson, shapely, shapefile
+from typing import List
+import geojson, shapefile
 from PIL import Image
+from shapely.geometry import shape
+from shapely.geometry.base import BaseGeometry
 
 # Neither working
 # from osgeo import gdal, ogr
@@ -15,8 +18,12 @@ def write_shp():
     pass
 
 
-def read_geojson():
-    pass
+def read_geojson(file) -> List[BaseGeometry]:
+    geom = geojson.loads(file.read())
+
+    file.close()
+
+    return [shape(feature['geometries']) for feature in geom['features']]
 
 
 def write_geojson():
