@@ -40,6 +40,14 @@ class Database:
                 cur.execute(query)
                 self.conn.commit()
 
+            srid_query = sql.SQL('SELECT UpdateGeometrySRID({name}, geom, {srid})').format(
+                name=sql.Identifier(srid),
+                srid=sql.Literal(srid)
+            )
+
+            cur.execute(srid_query)
+            self.conn.commit()
+
     def postgis_append(self, name, srid, geom: BaseGeometry):
         with self.new_cursor() as cur:
             query = sql.SQL('INSERT INTO {name} (geom) VALUES ({value})').format(

@@ -10,8 +10,9 @@ from shapely.geometry.base import BaseGeometry
 
 
 # https://pcjericks.github.io/py-gdalogr-cookbook/vector_layers.html
-def read_shp():
-    pass
+def read_shp(file):
+    r = shapefile.Reader(file)
+    return r.shapes()
 
 
 def write_shp():
