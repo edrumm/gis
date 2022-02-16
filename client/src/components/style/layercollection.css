@@ -2,4 +2,13 @@
     width: 10%;
     height: 100%;
     background-color: grey;
+    padding: 1%;
+}
+
+.layer-collection ul {
+    list-style-type: none;
+}
+
+.layer-collection ul li {
+    padding: 2%;
 }

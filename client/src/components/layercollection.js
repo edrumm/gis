@@ -13,7 +13,11 @@ const LayerCollection = () => {
     return (
         <>
         <div className='layer-collection'>
-            Layer Collection
+            <ul>
+                <li><Layer name="Locations" type="Vector" srid="26918"/></li>
+                <li><Layer name="Elevation of city" type="Raster" srid="4326"/></li>
+            </ul>
+            
         </div>
         </>
     );

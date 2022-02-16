@@ -7,6 +7,7 @@
 .layer {
     padding: 1%;
     width: 100%;
+    background-color: lightgray;
 }
 
 .layer ul {

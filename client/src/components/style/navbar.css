@@ -3,3 +3,19 @@ nav {
     height: 5%;
     background-color: darkgray;
 }
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+}
+
+nav ul li {
+    padding: 0.5%;
+    margin-right: 2%;
+    font-weight: bold;
+}
+
+#dropdown-icon {
+    display: none;
+}

@@ -5,7 +5,12 @@ const Navbar = () => {
     return(
         <>
         <nav>
-            Navigation Bar
+            <ul>
+                <li id='dropdown-icon'>☰</li>
+                <li>Online GIS</li>
+                <li>Navbar 1</li>
+                <li>Navbar 2</li>
+            </ul>
         </nav>
         </>
     );
