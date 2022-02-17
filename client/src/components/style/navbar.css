@@ -14,6 +14,14 @@ nav ul li {
     padding: 0.5%;
     margin-right: 2%;
     font-weight: bold;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+nav ul li:hover {
+    background-color: #808080;
 }
 
 #dropdown-icon {

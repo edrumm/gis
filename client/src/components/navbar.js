@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { FaVectorSquare, FaRegMap } from 'react-icons/fa';
+import { GoFileBinary } from 'react-icons/go';
+import { BiLayerPlus, BiLayerMinus, BiShapePolygon, BiCog } from 'react-icons/bi';
+import { AiOutlineDownload, AiOutlineUpload } from 'react-icons/ai';
 import './style/navbar.css';
 
 const Navbar = () => {
@@ -7,9 +10,12 @@ const Navbar = () => {
         <nav>
             <ul>
                 <li id='dropdown-icon'>☰</li>
-                <li>Online GIS</li>
-                <li>Navbar 1</li>
-                <li>Navbar 2</li>
+                <li><BiShapePolygon/></li>
+                <li><GoFileBinary/></li>
+                <li><BiLayerPlus/></li>
+                <li><AiOutlineDownload/></li>
+                <li><FaRegMap/></li>
+                <li><BiCog/></li>
             </ul>
         </nav>
         </>
