@@ -6,10 +6,20 @@ import './style/navbar.css';
 
 // https://stackoverflow.com/questions/60877944/react-how-to-pass-an-array-as-props-and-render-a-list-of-images
 const Submenu = (props) => {
+    const { items } = props;
+
+    /* {items.map(item => {
+        <li>item</li>
+    })} */
+    
     return (
+        <>
         <ul className='submenu'>
-            
+            <li>Submenu Item</li>
+            <li>Submenu Item</li>
+            <li>Submenu Item</li>
         </ul>
+        </>
     );
 };
 
@@ -19,12 +29,30 @@ const Navbar = () => {
         <nav>
             <ul>
                 <li id='dropdown-icon'>☰</li>
-                <li><BiShapePolygon/></li>
-                <li><GoFileBinary/></li>
-                <li><BiLayerPlus/></li>
-                <li><AiOutlineDownload/></li>
-                <li><FaRegMap/></li>
-                <li><BiCog/></li>
+                <li>
+                    <BiShapePolygon/>
+                    <Submenu items={['Item1', 'Item2']}/>
+                </li>
+                <li>
+                    <GoFileBinary/>
+                    <Submenu items={['Item1', 'Item2']}/>
+                </li>
+                <li>
+                    <BiLayerPlus/>
+                    <Submenu items={['Item1', 'Item2']}/>
+                </li>
+                <li>
+                    <AiOutlineDownload/>
+                    <Submenu items={['Item1', 'Item2']}/>         
+                </li>
+                <li>
+                    <FaRegMap/>
+                    <Submenu items={['Item1', 'Item2']}/>
+                </li>
+                <li>
+                    <BiCog/>
+                    <Submenu items={['Item1', 'Item2']}/>
+                </li>
             </ul>
         </nav>
         </>
