@@ -4,57 +4,101 @@ import { BiLayerPlus, BiLayerMinus, BiShapePolygon, BiCog } from 'react-icons/bi
 import { AiOutlineDownload, AiOutlineUpload } from 'react-icons/ai';
 import './style/navbar.css';
 
-// https://stackoverflow.com/questions/60877944/react-how-to-pass-an-array-as-props-and-render-a-list-of-images
-const Submenu = (props) => {
-    const { items } = props;
+// https://blog.logrocket.com/creating-multilevel-dropdown-menu-react/
+const items = [
+    {
+        title: <BiShapePolygon/>,
+        submenu: [
+            { title: 'Points in polygon' },
+            { title: 'Convex Hull' },
+            { title: 'Voronoi Polygon' }
+        ]
+    },
+    {
+        title: <GoFileBinary/>,
+        submenu: [
+            { title: 'Slope' },
+            { title: 'Aspect' }
+        ]
+    },
+    {
+        title: <BiLayerPlus/>,
+        submenu: [
+            { title: 'New Vector Layer' },
+            { title: 'New Raster Layer' }
+        ]
+    },
+    {
+        title: <AiOutlineDownload/>,
+        submenu: [
+            { title: 'Download as CSV' },
+            { title: 'Download as Shapefile' },
+            { title: 'Download as GeoJSON' },
+            { title: 'Download as GeoTIFF' },
+            { title: 'Download as IMG' }
+        ]
+    },
+    {
+        title: <FaRegMap/>,
+        submenu: [
+            { title: 'New Base Map' }
+        ]
+    },
+    {
+        title: <BiCog/>,
+        submenu: [
+            { title: 'Clear All Layers' }
+        ]
+    }
+];
 
-    /* {items.map(item => {
-        <li>item</li>
-    })} */
-    
+const Submenu = ({ props }) => {
+
     return (
-        <>
         <ul className='submenu'>
-            <li>Submenu Item</li>
-            <li>Submenu Item</li>
-            <li>Submenu Item</li>
+            {props.map((p, i) => {
+                return (
+                    <li key={i}>
+                        {p.title}
+                    </li>
+                );
+            })
+        }
         </ul>
-        </>
+    );
+};
+
+const Items = ({ props }) => {
+    return (
+        <li>
+        {
+            <>
+            {props.title}
+            <Submenu props={props.submenu} />
+            </>
+        }
+        </li>
     );
 };
 
 const Navbar = () => {
     return(
         <>
-        <nav>
-            <ul>
-                <li id='dropdown-icon'>☰</li>
-                <li>
-                    <BiShapePolygon/>
-                    <Submenu items={['Item1', 'Item2']}/>
-                </li>
-                <li>
-                    <GoFileBinary/>
-                    <Submenu items={['Item1', 'Item2']}/>
-                </li>
-                <li>
-                    <BiLayerPlus/>
-                    <Submenu items={['Item1', 'Item2']}/>
-                </li>
-                <li>
-                    <AiOutlineDownload/>
-                    <Submenu items={['Item1', 'Item2']}/>         
-                </li>
-                <li>
-                    <FaRegMap/>
-                    <Submenu items={['Item1', 'Item2']}/>
-                </li>
-                <li>
-                    <BiCog/>
-                    <Submenu items={['Item1', 'Item2']}/>
-                </li>
-            </ul>
-        </nav>
+        <div className='container'>
+            <header>
+                <nav className='navbar'>
+                    <ul className='navbar-ul'>
+                        {
+                            items.map((item, i) => {
+                                return (
+                                    <Items props={item} key={i} />
+                                );
+                            })
+                        }
+                    </ul>
+                </nav>
+            </header>
+        </div>
         </>
     );
 };
