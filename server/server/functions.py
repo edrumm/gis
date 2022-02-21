@@ -16,9 +16,17 @@ def count_points_in_polygon(db: Database, polygon, points, sub_table) -> int:
     return count[0][0]
 
 
-def convex_hull(db: Database, points, table):
-    query = sql.SQL('SELECT ST_AsGeoJson(ST_ConvexHull(ST_Collect({points}))) FROM {table}').format(
-        points=sql.Identifier(points),
+def convex_hull(db: Database, table):
+    query = sql.SQL('SELECT ST_AsGeoJson(ST_ConvexHull(ST_Collect(geom))) FROM {table}').format(
+        table=sql.Identifier(table)
+    )
+
+    result = db.postgis_query(query)
+    return geojson.loads(result[0][0])
+
+
+def voronoi(db: Database, table):
+    query = sql.SQL('SELECT ST_AsGeoJSON(ST_VoronoiPolygons(ST_Collect(geom))) FROM {table}').format(
         table=sql.Identifier(table)
     )
 

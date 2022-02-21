@@ -87,7 +87,28 @@ def count():
 def convex():
    try:
       req_body = request.json
-      geom = convex_hull(db, req_body['points'], req_body['table'])
+      geom = convex_hull(db, req_body['table'])
+
+      return jsonify({
+         'body': geom,
+         'layer': None,
+         'err': None
+      })
+
+   except Exception as e:
+      return jsonify({
+         'body': None,
+         'layer': None,
+         'err': str(e)
+      })
+
+
+@app.route('/voronoi', methods=['POST'])
+@cross_origin()
+def voronoi_polygon():
+   try:
+      req_body = request.json
+      geom = voronoi(db, req_body['table'])
 
       return jsonify({
          'body': geom,

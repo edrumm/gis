@@ -41,7 +41,7 @@ const items = [
     {
         title: <FaRegMap/>,
         submenu: [
-            { title: 'New Base Map' }
+            { title: 'New Mapbox-GL Map' }
         ]
     },
     {

@@ -13,7 +13,6 @@ import fetch from 'node-fetch';
 describe('Test functions', () => {
     it('Convex hull', () => {
         const data = {
-            points: 'geom',
             table: 'nyc_subway_stations'
         };
           
@@ -26,7 +25,7 @@ describe('Test functions', () => {
         };
 
         assert.doesNotThrow(() => {
-            fetch('http://localhost:5000/convex', options)
+            fetch('convex', options)
             .then(res => res.json())
             .then(json => assert.equal(json.body.coordinates[0][0], [563292.1172580556, 4484900.921251608]))
         });
@@ -48,11 +47,32 @@ describe('Test functions', () => {
         };
 
         assert.doesNotThrow(() => {
-            fetch('http://localhost:5000/count', options)
+            fetch('/count', options)
             .then(res => res.json())
             .then(json => assert.equal(json.body, 491));
         });
     }).timeout(5000);
+
+    it('Voronoi polygon', () => {
+        const data = {
+            table: 'nyc_subway_stations'
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+
+        assert.doesNotThrow(() => {
+            fetch('/voronoi', options)
+            .then(res => res.json())
+            .then(json => { console.log(json.body); assert.isNotEmpty(json.body)});
+        });
+
+    }).timeout(10000);
 });
 
 // ..
