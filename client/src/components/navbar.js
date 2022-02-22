@@ -1,7 +1,7 @@
-import { FaVectorSquare, FaRegMap } from 'react-icons/fa';
+import { SiMapbox } from 'react-icons/si';
 import { GoFileBinary } from 'react-icons/go';
-import { BiLayerPlus, BiLayerMinus, BiShapePolygon, BiCog } from 'react-icons/bi';
-import { AiOutlineDownload, AiOutlineUpload } from 'react-icons/ai';
+import { BiLayerPlus, BiShapePolygon, BiCog } from 'react-icons/bi';
+import { AiOutlineDownload } from 'react-icons/ai';
 import './style/navbar.css';
 
 // https://blog.logrocket.com/creating-multilevel-dropdown-menu-react/
@@ -39,7 +39,7 @@ const items = [
         ]
     },
     {
-        title: <FaRegMap/>,
+        title: <SiMapbox/>,
         submenu: [
             { title: 'New Mapbox-GL Map' }
         ]
