@@ -3,6 +3,7 @@ import Layer from './components/layer';
 import LayerCollection from './components/layercollection';
 import MapWindow from './components/map';
 import Navbar from './components/navbar';
+import Footer from './components/footer';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <LayerCollection/>
         <MapWindow/>
       </div>
+      <Footer/>
     </div>
   );
 }

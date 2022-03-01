@@ -41,7 +41,7 @@ const items = [
     {
         title: <SiMapbox/>,
         submenu: [
-            { title: 'New Mapbox-GL Map' }
+            { title: 'Mapbox-GL' }
         ]
     },
     {

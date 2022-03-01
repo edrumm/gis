@@ -18,7 +18,7 @@ const MapWindow = () => {
         id: 'subway stations',
         type: 'circle',
         paint: {
-            'circle-radius': 10,
+            'circle-radius': 5,
             'circle-color': '#007cbf'
         }
     };
