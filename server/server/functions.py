@@ -2,7 +2,7 @@ from server.database import Database
 from psycopg2 import sql
 from shapely import wkb # maybe
 import geojson
-
+import geopandas as gpd
 
 # Vector
 def count_points_in_polygon(db: Database, polygon, points, sub_table) -> int:

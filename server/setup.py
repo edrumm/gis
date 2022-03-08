@@ -14,6 +14,7 @@ setup(
         'flask',
         'flask-cors',
         'geojson',
+        'geopandas',
         'pillow',
         'psycopg2',
         'pyshp',
@@ -22,4 +23,7 @@ setup(
         'python-dotenv',
         'shapely',
     ],
+    dependency_links=[
+        'git+git://github.com/geopandas/geopandas.git'
+    ]
 )

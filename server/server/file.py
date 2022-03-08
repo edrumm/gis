@@ -3,10 +3,7 @@ import geojson, shapefile
 from PIL import Image
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
-
-# Neither working
-# from osgeo import gdal, ogr
-# import fiona
+import geopandas as gpd
 
 
 # https://pcjericks.github.io/py-gdalogr-cookbook/vector_layers.html
@@ -21,6 +18,9 @@ def write_shp():
 
 def read_geojson(file) -> List[BaseGeometry]:
     geom = geojson.loads(file.read())
+
+    frame = gpd.read_file(file, driver='GeoJSON')
+    frame.to_json()
 
     file.close()
 
