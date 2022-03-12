@@ -23,8 +23,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "flask-start": "cd ../server && venv\\Scripts\\activate && flask run",
-    "flask-install": "cd ../server && venv\\Scripts\\activate && pip install -e .",
+    "flask-start": "cd ../server && python main.py",
     "build": "react-scripts build",
     "test": "mocha src/test/*.test.js --reporter spec --require @babel/register",
     "eject": "react-scripts eject"
