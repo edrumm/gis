@@ -9,6 +9,7 @@ from uuid import uuid4
 
 from database import Connection
 import functions as func
+import raster as rst
 
 
 app = Flask(__name__)

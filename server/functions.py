@@ -1,6 +1,5 @@
 from psycopg2 import sql
 import geopandas as gpd
-from osgeo import gdal
 
 
 def count_points_in_polygon(db, polygon, points):
@@ -40,20 +39,3 @@ def voronoi_polygons(db, table) -> gpd.GeoDataFrame:
     )
 
     return db.postgis(query)
-
-
-# Raster
-def slope():
-    pass
-
-
-def aspect():
-    pass
-
-
-def rasterize():
-    pass
-
-
-def polygonize():
-    pass
