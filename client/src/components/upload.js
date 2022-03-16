@@ -48,7 +48,7 @@ const Upload = () => {
                     icon: 'success',
                 });
 
-                console.log(json.body)
+                console.log(JSON.parse(json));
             }
         }) // placeholder, save returned geom
         .catch(err => {
@@ -68,7 +68,7 @@ const Upload = () => {
         <form className="upload-form" onSubmit={send}>
             <label>
                 Upload<br/>
-                <input type="file" accept={supportedTypes} onChange={e => { 
+                <input type="file" accept={supportedTypes} name="file" onChange={e => { 
                     setFile(e.target.files[0]);
                 }}/>
             </label>

@@ -4,8 +4,9 @@ import LayerCollection from './components/layercollection';
 import MapWindow from './components/map';
 import Navbar from './components/navbar';
 import Footer from './components/footer';
+import Upload from './components/upload';
 
-function App() {
+/*function App() {
   return (
     <div className="App">
       <Navbar/>
@@ -13,7 +14,16 @@ function App() {
         <LayerCollection/>
         <MapWindow/>
       </div>
+      <Upload/>
       <Footer/>
+    </div>
+  );
+}*/
+
+function App() {
+  return (
+    <div className="App"> 
+      <Upload/>
     </div>
   );
 }

@@ -4,23 +4,25 @@ from dotenv import dotenv_values
 from werkzeug.utils import secure_filename
 import fiona
 import geopandas as gpd
-import os
+import os, sys, signal
 from uuid import uuid4
+from sqlalchemy import create_engine
 
 from database import Connection
 import functions as func
-import raster as rst
-import file as fi
+import raster
+import file
 
 
 app = Flask(__name__)
-CORS(app)  # , expose_headers='Authorization'
+CORS(app, expose_headers='Authorization')
 
 user_id = uuid4()
 root_dir = os.path.abspath(os.getcwd())
 
-# app['UPLOAD_DIR'] = os.path.join(root_dir, "/upload")
-# app['DOWNLOAD_DIR'] = os.path.join(root_dir, "/download")
+app.config['UPLOAD_DIR'] = os.path.join(root_dir, "/upload")
+app.config['DOWNLOAD_DIR'] = os.path.join(root_dir, "/download")
+app.config['SUPPORTED_TYPES'] = [".shp", ".zip", ".geojson", ".bil", ".tif"]
 
 try:
     config = dotenv_values(".env")
@@ -29,12 +31,19 @@ try:
     pg_host = config.get("PG_HOST")
     pg_password = config.get("PG_PASSWORD")
     pg_db = config.get("PG_DB")
+    pg_port = 5432
 
-    db = Connection(pg_host, pg_db, pg_user, pg_password)
+    db = Connection(pg_host, pg_db, pg_user, pg_password, pg_port)
 
 except Exception as e:
     app.logger.error(e)
     db = None
+
+if not os.path.isdir(app.config['UPLOAD_DIR']):
+    os.mkdir(app.config['UPLOAD_DIR'])
+
+if not os.path.isdir(app.config['DOWNLOAD_DIR']):
+    os.mkdir(app.config['DOWNLOAD_DIR'])
 
 
 @app.route('/', methods=['GET'])
@@ -158,13 +167,42 @@ def test():
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
-    return "Under construction"
+    try:
+        f = request.files['file']
+
+        if not any(ext in f.filename for ext in app.config['SUPPORTED_TYPES']):
+            raise IOError("The uploaded file type is not supported")
+
+        filename = secure_filename(f.filename)
+        layer_name = f.filename.partition('.')[0]
+        path = os.path.join(app.config['UPLOAD_DIR'], filename)
+        f.save(path)
+
+        geom = file.read_vector(path)
+        db.postgis_insert(geom, layer_name, 26918)
+
+        return jsonify({
+            'body': geom.to_json(),
+            'layer': layer_name,
+            'err': None
+        })
+
+    except Exception as e:
+        return jsonify({
+            'body': None,
+            'layer': None,
+            'err': str(e)
+        })
 
 
 @app.route('/download', methods=['POST'])
 @cross_origin()
 def download():
     return "Under construction"
+
+
+def stop():
+    sys.exit(0)
 
 
 if __name__ == '__main__':
