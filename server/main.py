@@ -1,17 +1,12 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS, cross_origin
 from dotenv import dotenv_values
 from werkzeug.utils import secure_filename
-import fiona
-import geopandas as gpd
-import os, sys, signal
 from uuid import uuid4
-from sqlalchemy import create_engine
-
 from database import Connection
-import functions as func
-import raster
-import file
+import geopandas as gpd
+import os
+import file, functions, raster, crs
 
 
 app = Flask(__name__)
@@ -20,9 +15,32 @@ CORS(app, expose_headers='Authorization')
 user_id = uuid4()
 root_dir = os.path.abspath(os.getcwd())
 
+
+def dir_config(tag):
+    if not os.path.exists(app.config[tag]):
+        os.mkdir(app.config[tag])
+    else:
+        filelist = [f for f in os.listdir(app.config[tag])]
+        for f in filelist:
+            os.remove(os.path.join(app.config[tag], f))
+
+
+def generate_file_num():
+    num = 0
+
+    while True:
+        yield num
+        num += 1
+
+
+file_num = generate_file_num()
+
 app.config['UPLOAD_DIR'] = os.path.join(root_dir, "/upload")
 app.config['DOWNLOAD_DIR'] = os.path.join(root_dir, "/download")
 app.config['SUPPORTED_TYPES'] = [".shp", ".zip", ".geojson", ".bil", ".tif"]
+
+dir_config('UPLOAD_DIR')
+dir_config('DOWNLOAD_DIR')
 
 try:
     config = dotenv_values(".env")
@@ -39,16 +57,14 @@ except Exception as e:
     app.logger.error(e)
     db = None
 
-if not os.path.isdir(app.config['UPLOAD_DIR']):
-    os.mkdir(app.config['UPLOAD_DIR'])
-
-if not os.path.isdir(app.config['DOWNLOAD_DIR']):
-    os.mkdir(app.config['DOWNLOAD_DIR'])
-
 
 @app.route('/', methods=['GET'])
 def main():
-    return "127.0.0.1:5000"
+    return jsonify({
+        'db': True if db else False,
+        'uuid': user_id,
+        'root_dir': root_dir
+    })
 
 
 @app.route('/convex', methods=['POST'])
@@ -57,7 +73,7 @@ def convex_hull():
     req = request.json
 
     try:
-        geom = func.convex_hull(db, req['points'])
+        geom = functions.convex_hull(db, req['points'])
 
         return jsonify({
             'body': geom.to_json(),
@@ -79,7 +95,7 @@ def voronoi_polygons():
     req = request.json
 
     try:
-        geom = func.voronoi_polygons(db, req['points'])
+        geom = functions.voronoi_polygons(db, req['points'])
 
         return jsonify({
             'body': geom.to_json(),
@@ -101,7 +117,7 @@ def count():
     req = request.json
 
     try:
-        geom = func.count_points_in_polygon(db, req['polygon'], req['points'])
+        geom = functions.count_points_in_polygon(db, req['polygon'], req['points'])
 
         return jsonify({
             'body': geom.to_json(),
@@ -132,20 +148,58 @@ def polygonize():
 @app.route('/slope', methods=['POST'])
 @cross_origin()
 def slope():
-    return "Under construction"
+    try:
+        path = os.path.join(app.config['UPLOAD_DIR'], request.json['file'])
+        ds = raster.get_gdal_dataset(path)
+
+        filename = request.json['file'].partition('.')[0] + next(file_num)
+
+        slp = raster.aspect(ds, os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.tif'))
+        raster.write_raster(slp, os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.png'))
+
+        return jsonify({
+            'body': True,
+            'layer': 'slope',
+            'err': None
+        })
+
+    except Exception as e:
+        return jsonify({
+            'body': None,
+            'err': str(e)
+        })
 
 
 @app.route('/aspect', methods=['POST'])
 @cross_origin()
 def aspect():
-    return "Under construction"
+    try:
+        path = os.path.join(app.config['UPLOAD_DIR'], request.json['file'])
+        ds = raster.get_gdal_dataset(path)
+
+        filename = request.json['file'].partition('.')[0] + next(file_num)
+
+        asp = raster.aspect(ds, os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.tif'))
+        raster.write_raster(asp, os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.png'))
+
+        return jsonify({
+            'body': True,
+            'layer': 'aspect',
+            'err': None
+        })
+
+    except Exception as e:
+        return jsonify({
+            'body': None,
+            'err': str(e)
+        })
 
 
 @app.route('/test', methods=['GET', 'POST'])
 @cross_origin()
 def test():
     try:
-        geom = func.count_points_in_polygon(db, 'nyc_neighborhoods', 'nyc_homicides')
+        geom = functions.count_points_in_polygon(db, 'nyc_neighborhoods', 'nyc_homicides')
 
         return jsonify({
             'body': geom.to_json(),
@@ -164,6 +218,24 @@ def test():
     # return func.voronoi_polygons(db, 'nyc_subway_stations').to_json()
 
 
+@app.route('/drop', methods=['POST'])
+@cross_origin()
+def drop():
+    try:
+        db.postgis_drop_layer(request.json['layer'])
+
+        return jsonify({
+            'body': True,
+            'err': None
+        })
+
+    except Exception as e:
+        return jsonify({
+            'body': None,
+            'err': str(e)
+        })
+
+
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
@@ -178,14 +250,22 @@ def upload():
         path = os.path.join(app.config['UPLOAD_DIR'], filename)
         f.save(path)
 
-        geom = file.read_vector(path)
-        db.postgis_insert(geom, layer_name, 26918)
+        if ".tif" in filename:
+            return jsonify({
+                'body': True,
+                'layer': layer_name,
+                'err': None
+            })
 
-        return jsonify({
-            'body': geom.to_json(),
-            'layer': layer_name,
-            'err': None
-        })
+        else:
+            geom = file.read_vector(path)
+            db.postgis_insert(geom, layer_name, 26918)
+
+            return jsonify({
+                'body': geom.to_json(),
+                'layer': layer_name,
+                'err': None
+            })
 
     except Exception as e:
         return jsonify({
@@ -199,10 +279,6 @@ def upload():
 @cross_origin()
 def download():
     return "Under construction"
-
-
-def stop():
-    sys.exit(0)
 
 
 if __name__ == '__main__':

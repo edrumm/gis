@@ -48,7 +48,7 @@ const Upload = () => {
                     icon: 'success',
                 });
 
-                console.log(JSON.parse(json));
+                console.log(JSON.parse(json.body));
             }
         }) // placeholder, save returned geom
         .catch(err => {
@@ -59,7 +59,7 @@ const Upload = () => {
         });
     };
 
-    const supportedTypes = '.shp, .shx, .dbf, .prj, .zip, .geojson, .tiff, .tif, .img';
+    const supportedTypes = '.shp, .shx, .dbf, .prj, .zip, .geojson, .tiff, .tif, .bil';
 
     // VERY rough interface to test
     // will fix later

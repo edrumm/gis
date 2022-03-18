@@ -1,7 +1,10 @@
 from osgeo import gdal
+import matplotlib.pyplot as plt
 import numpy as np
 
 
+# Register GDAL drivers for GeoTiff and BIL
+# (May not be required for DEMProcessing)
 geotiff = gdal.GetDriverByName("GTiff")
 bil = gdal.GetDriverByName("EHdr")
 
@@ -33,25 +36,12 @@ def get_gdal_dataset(file):
     return gdal.Open(file)
 
 
-def reclassify(dataset):
-    return np.where((dataset >= np.mean(dataset)), 1, 0)
+def write_raster(dataset, path):
+    figure = plt.figure()
 
+    plt.imshow(np.where((dataset >= np.mean(dataset)), 1, 0), cmap='tab20_r')
+    plt.gca().set_axis_off()
+    plt.subplots_adjust(top=1, bottom=0, left=0, right=1, hspace=0, wspace=0)
+    plt.margins(0, 0)
 
-def write_raster(dataset, name, format):
-    gt = dataset.GetGeoTransform()
-    proj = dataset.GetProjection()
-
-    output = None
-    if format == "geotiff":
-        output = geotiff.Create(name, xsize=dataset.shape[1], ysize=dataset.shape[0], bands=1, eType=gdal.GDT_Int16)
-
-    else:
-        output = bil.Create(name, xsize=dataset.shape[1], ysize=dataset.shape[0], bands=1, eType=gdal.GDT_Int16)
-
-    output.SetProjection(proj)
-    output.SetGeoTransform(gt)
-
-    band = output.GetRasterBand(1)
-    band.WriteArray(reclassify(dataset))
-    band.SetNoValue(np.NaN)
-    band.FlushCache()
+    figure.savefig(path, dpi=figure.dpi, bbox_inches='tight', pad_inches=0, transparent=True)

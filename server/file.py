@@ -1,4 +1,3 @@
-import fiona
 import geopandas as gpd
 
 
@@ -10,9 +9,8 @@ def read_vector(path):
     return gpd.read_file(path)
 
 
-def write_shapefile(frame, path):
-    frame.to_file(path)
-
-
-def write_geojson(frame, path):
-    frame.to_file(path, driver='GeoJSON')
+def write_vector(frame, path, driver=None):
+    if driver is not None:
+        frame.to_file(path, driver=driver)
+    else:
+        frame.to_file(path)
