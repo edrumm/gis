@@ -12,7 +12,7 @@ const Landing = () => {
             </div>
             <Footer/>
         </>
-    )
+    );
 };
 
 export default Landing;

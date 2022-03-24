@@ -7,6 +7,7 @@ import './App.css';
 
 // https://opensource.com/article/21/3/react-app-hooks
 // https://www.techomoro.com/how-to-create-a-multi-page-website-with-react-in-5-minutes/
+// https://www.robinwieruch.de/local-storage-react/
 
 function App() {
   return (
