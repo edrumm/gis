@@ -1,30 +1,24 @@
+import React from 'react';
+import {BrowserRouter as Router, Route, Routes, Navigate, NavLink} from 'react-router-dom';
+import Landing from './pages/landing';
+import Display from './pages/display';
+import NotFound from './pages/notFound';
 import './App.css';
-import Layer from './components/layer';
-import LayerCollection from './components/layercollection';
-import MapWindow from './components/map';
-import Navbar from './components/navbar';
-import Footer from './components/footer';
-import Upload from './components/upload';
 
-/*function App() {
-  return (
-    <div className="App">
-      <Navbar/>
-      <div className='main'>
-        <LayerCollection/>
-        <MapWindow/>
-      </div>
-      <Upload/>
-      <Footer/>
-    </div>
-  );
-}*/
+// https://opensource.com/article/21/3/react-app-hooks
 
 function App() {
   return (
-    <div className="App"> 
-      <Upload/>
-    </div>
+    <>
+      <Router>
+        <Routes>
+          <Route path="" element={<Landing/>}/>
+          <Route path="display" element={<Display/>}/>
+          <Route path="404" element={<NotFound/>}/>
+          {/*<Route path="" element={<Navigate to={Landing}/>}/>*/}
+        </Routes>
+      </Router>
+    </>
   );
 }
 

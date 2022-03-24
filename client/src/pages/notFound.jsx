@@ -1,7 +1,7 @@
 import React from 'react';
 import './style/error.css';
 
-const Error = () => {
+const NotFound = () => {
     return(
         <div>
             <h1>Error</h1>
@@ -10,4 +10,4 @@ const Error = () => {
     );
 };
 
-export default Error;
+export default NotFound;

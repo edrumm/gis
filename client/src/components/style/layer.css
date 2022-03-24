@@ -3,21 +3,3 @@
 :root {
     font-size: 1em;
 }
-
-.layer {
-    padding: 1%;
-    width: 100%;
-    background-color: lightgray;
-}
-
-.layer ul {
-    list-style-type: none;
-}
-
-.layer-name {
-    font-weight: bold;
-}
-
-.layer-subtitle {
-    font-size: 0.8em;
-}
