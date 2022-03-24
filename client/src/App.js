@@ -6,6 +6,7 @@ import NotFound from './pages/notFound';
 import './App.css';
 
 // https://opensource.com/article/21/3/react-app-hooks
+// https://www.techomoro.com/how-to-create-a-multi-page-website-with-react-in-5-minutes/
 
 function App() {
   return (
