@@ -3,3 +3,26 @@
 :root {
     font-size: 1em;
 }
+
+.layer {
+    margin: 0.5%;
+    padding: 1%;
+    margin-top: 2%;
+    background-color: #eee;
+    border: 1px solid #eee;
+    border-radius: 1%;
+}
+
+.layer ul {
+    list-style-type: none;
+}
+
+.layer-name {
+    font-weight: bold;
+    padding-bottom: 1%;
+}
+
+.layer-subtitle {
+    font-size: 0.8em;
+    font-family: 'Century Gothic';
+}

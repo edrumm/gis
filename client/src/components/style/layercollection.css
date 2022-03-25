@@ -1,5 +1,22 @@
 /* Placeholder */
 
+html {
+    background-color: #eee;
+}
+
 .layer-collection {
- font-family: sans-serif;   
+    width: 30vw;
+    margin: 10em auto;
+    padding: 1%;
+    box-shadow: 0 0 5px 5px #d3d3d3;
+    border: 1px solid #efefef;
+    border-radius: 1%;
+    background-color: white;
+}
+
+.layer-header {
+    padding: 0.5%;
+    padding-bottom: 2%;
+    font-weight: bold;
+    font-size: 1.2em;
 }

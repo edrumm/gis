@@ -1,6 +1,7 @@
 import React from "react";
 import Footer from './../components/footer';
 import Navbar from './../components/navbar';
+import LayerCollection from "../components/layers";
 import './style/content.css'
 
 const Landing = () => {
@@ -8,7 +9,7 @@ const Landing = () => {
         <>
             <Navbar/>
             <div className="content">
-                Content
+                <LayerCollection />
             </div>
             <Footer/>
         </>
