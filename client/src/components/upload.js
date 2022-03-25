@@ -3,7 +3,7 @@ import './style/upload.css';
 import Swal from 'sweetalert2';
 // import Layer from './layer';
 
-const Upload = () => {
+const Upload = (props) => {
 
     const [file, setFile] = useState(null);
     const [srid, setSRID] = useState('3857');
@@ -27,13 +27,15 @@ const Upload = () => {
             return;
         }
 
-        if (!srid.match(/^[0-9]+$/) || srid == '') {
+        if (!srid.match(/^[0-9]+$/) || srid === '') {
             Popup.fire({
                 title: 'Invalid SRID',
                 icon: 'error',
             });
             return;
         }
+
+        props.uploadLayer(props.name, props.type, props.srid);
         
         const data = new FormData();
         data.append("file", file);
@@ -57,8 +59,10 @@ const Upload = () => {
                     title: 'File uploaded',
                     icon: 'success',
                 });
+
+                sessionStorage.setItem('geom', JSON.parse(json.body));
             }
-        }) // placeholder, save returned geom
+        })
         .catch(err => {
             Popup.fire({
                 title: err,

@@ -26,3 +26,8 @@
     font-size: 0.8em;
     font-family: 'Century Gothic';
 }
+
+.rm-layer {
+    z-index: 1;
+    vertical-align: middle;
+}
