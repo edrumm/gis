@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const Upload = () => {
 
     const [file, setFile] = useState(null);
+    const [srid, setSRID] = useState('3857');
 
     const Popup = Swal.mixin({
         toast: true,
@@ -25,9 +26,18 @@ const Upload = () => {
             });
             return;
         }
+
+        if (!srid.match(/^[0-9]+$/) || srid == '') {
+            Popup.fire({
+                title: 'Invalid SRID',
+                icon: 'error',
+            });
+            return;
+        }
         
         const data = new FormData();
         data.append("file", file);
+        data.append("srid", srid);
 
         const options = {
             method: 'POST',
@@ -65,9 +75,16 @@ const Upload = () => {
         <>
         <form className="upload-form" onSubmit={send}>
             <label>
-                Upload<br/>
+                Upload Layer <br/>
                 <input type="file" accept={supportedTypes} name="file" onChange={e => { 
                     setFile(e.target.files[0]);
+                }}/>
+            </label>
+            <label>
+                <br/>
+                SRID <br/>
+                <input type="text" name="srid" value="3857" onChange={e => {
+                    setSRID(e.target.value.toString());
                 }}/>
             </label>
             <br/>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Upload from './upload';
 import './style/layercollection.css';
 import './style/layer.css';
 
@@ -32,6 +33,8 @@ const LayerCollection = () => {
         srid: 26918
     }]);
 
+    const [selectedLayers, setSelectedLayers] = useState([]);
+
     return (
         <>
         <div className='layer-collection'>
@@ -43,6 +46,8 @@ const LayerCollection = () => {
                     ))
                 }
             </div>
+            <hr/>
+            <Upload/>
         </div>
         </>
     );
