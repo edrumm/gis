@@ -8,9 +8,13 @@
     margin: 0.5%;
     padding: 1%;
     margin-top: 2%;
-    background-color: #eee;
     border: 1px solid #eee;
     border-radius: 1%;
+    position: relative;
+}
+
+.layer:hover {
+    cursor: pointer;
 }
 
 .layer ul {
@@ -28,6 +32,19 @@
 }
 
 .rm-layer {
-    z-index: 1;
-    vertical-align: middle;
+    right: 2%;
+    top: 0;
+    position: absolute;
+    transition: 0.2s ease-in-out 0.2s;
+    -o-transition: 0.2s ease-in-out 0.2s;
+    -webkit-transition: 0.2s ease-in-out 0.2s;
+    -moz-transition: 0.2s ease-in-out 0.2s;
+}
+
+.rm-layer:hover {
+    transform: scale(1.25);
+    -o-transform: scale(1.25);
+    -webkit-transform: scale(1.25);
+    -moz-transform: scale(1.25);
+    -ms-transform: scale(1.25);
 }
