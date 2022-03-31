@@ -7,6 +7,13 @@ import './style/navbar.css';
 // https://blog.logrocket.com/creating-multilevel-dropdown-menu-react/
 const items = [
     {
+        title: 'Online GIS',
+        submenu: [
+            { title: 'GitHub' },
+            { title: 'Heriot-Watt University' }
+        ]
+    },
+    {
         title: <BiShapePolygon/>,
         submenu: [
             { title: 'Points in polygon' },
@@ -17,31 +24,8 @@ const items = [
     {
         title: <GoFileBinary/>,
         submenu: [
-            { title: 'Slope' },
-            { title: 'Aspect' }
-        ]
-    },
-    {
-        title: <BiLayerPlus/>,
-        submenu: [
-            { title: 'New Vector Layer' },
-            { title: 'New Raster Layer' }
-        ]
-    },
-    {
-        title: <AiOutlineDownload/>,
-        submenu: [
-            { title: 'Download as CSV' },
-            { title: 'Download as Shapefile' },
-            { title: 'Download as GeoJSON' },
-            { title: 'Download as GeoTIFF' },
-            { title: 'Download as IMG' }
-        ]
-    },
-    {
-        title: <SiMapbox/>,
-        submenu: [
-            { title: 'Mapbox-GL' }
+            { title: 'DEM Slope' },
+            { title: 'DEM Aspect' }
         ]
     },
     {

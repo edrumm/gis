@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from uuid import uuid4
 from database import Connection
 import geopandas as gpd
-import os
+import os, zipfile
 import file, functions, raster, crs
 
 
@@ -39,6 +39,9 @@ app.config['UPLOAD_DIR'] = os.path.join(root_dir, "/upload")
 app.config['DOWNLOAD_DIR'] = os.path.join(root_dir, "/download")
 app.config['SUPPORTED_TYPES'] = [".shp", ".zip", ".geojson", ".bil", ".tif"]
 
+user_upload_dir = os.path.join(app.config['UPLOAD_DIR'], str(user_id))
+user_download_dir = os.path.join(app.config['DOWNLOAD_DIR'], str(user_id))
+
 dir_config('UPLOAD_DIR')
 dir_config('DOWNLOAD_DIR')
 
@@ -58,12 +61,26 @@ except Exception as e:
     db = None
 
 
+def extract_zip(path):
+    with zipfile.ZipFile(path, "r") as z:
+        z.extractall(path)
+
+
+def create_zip(paths, zip_path):
+    with zipfile.ZipFile(zip_path, "w") as z:
+        for path in paths:
+            z.write(path)
+
+
 @app.route('/', methods=['GET'])
 def main():
     return jsonify({
         'db': True if db else False,
         'uuid': user_id,
-        'root_dir': root_dir
+        'root_dir': root_dir,
+        'upload_dir': app.config['UPLOAD_DIR'],
+        'download_dir': app.config['DOWNLOAD_DIR'],
+        'supported_types': app.config['SUPPORTED_TYPES']
     })
 
 
@@ -74,6 +91,7 @@ def convex_hull():
 
     try:
         geom = functions.convex_hull(db, req['points'])
+        geom = crs.to_web_mercator(geom)
 
         return jsonify({
             'body': geom.to_json(),
@@ -96,6 +114,7 @@ def voronoi_polygons():
 
     try:
         geom = functions.voronoi_polygons(db, req['points'])
+        geom = crs.to_web_mercator(geom)
 
         return jsonify({
             'body': geom.to_json(),
@@ -118,6 +137,7 @@ def count():
 
     try:
         geom = functions.count_points_in_polygon(db, req['polygon'], req['points'])
+        geom = crs.to_web_mercator(geom)
 
         return jsonify({
             'body': geom.to_json(),
@@ -131,18 +151,6 @@ def count():
             'layer': None,
             'err': str(err)
         })
-
-
-@app.route('/raster', methods=['POST'])
-@cross_origin()
-def rasterize():
-    return "Under construction"
-
-
-@app.route('/polygon', methods=['POST'])
-@cross_origin()
-def polygonize():
-    return "Under construction"
 
 
 @app.route('/slope', methods=['POST'])
@@ -200,6 +208,7 @@ def aspect():
 def test():
     try:
         geom = functions.count_points_in_polygon(db, 'nyc_neighborhoods', 'nyc_homicides')
+        geom = crs.to_web_mercator(geom)
 
         return jsonify({
             'body': geom.to_json(),
@@ -245,6 +254,9 @@ def upload():
         if not any(ext in f.filename for ext in app.config['SUPPORTED_TYPES']):
             raise IOError("The uploaded file type is not supported")
 
+        elif ".shp" in f.filename:
+            raise IOError("A shapefile must be uploaded as a zip with required supplementary files and optional prj")
+
         filename = secure_filename(f.filename)
         layer_name = f.filename.partition('.')[0]
         path = os.path.join(app.config['UPLOAD_DIR'], filename)
@@ -278,7 +290,17 @@ def upload():
 @app.route('/download', methods=['POST'])
 @cross_origin()
 def download():
-    return "Under construction"
+    try:
+        return jsonify({
+            'body': "Under construction",
+            'err': None
+        })
+
+    except Exception as e:
+        return jsonify({
+            'body': None,
+            'err': str(e)
+        })
 
 
 if __name__ == '__main__':

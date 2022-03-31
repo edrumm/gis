@@ -1,5 +1,5 @@
 import geopandas as gpd
 
 
-def change_crs(frame: gpd.GeoDataFrame, code):
-    return frame.to_crs(crs=code)
+def to_web_mercator(frame):
+    return frame.to_crs(3857)

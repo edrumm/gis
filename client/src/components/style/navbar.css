@@ -23,6 +23,8 @@
 .navbar-ul {
     list-style-type: none;
     flex-direction: row;
+    font-family: 'Century Gothic', sans-serif;
+    font-size: 1.1em;
 }
 
 .navbar-ul li {
@@ -54,5 +56,6 @@
 
 .submenu li {
     font-size: 0.8em;
+    font-weight: normal;
     padding: 5%;
 }
