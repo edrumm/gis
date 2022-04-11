@@ -3,43 +3,36 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# Register GDAL drivers for GeoTiff and BIL
-# (May not be required for DEMProcessing)
+# Register GDAL GeoTIFF driver
 geotiff = gdal.GetDriverByName("GTiff")
-bil = gdal.GetDriverByName("EHdr")
-
 geotiff.Register()
-bil.Register()
 
 
+# RASTER FUNCTIONS
+# Perform slope computation and return as NumPy array
 def slope(dataset, output):
-    slope_data = gdal.DEMProcessing(output, dataset, "slope", computeEdges=True)
+    slope_data = gdal.DEMProcessing(output, dataset, "slope", computeEdges=True, slopeFormat="percent")
 
     return slope_data.GetRasterBand(1).ReadAsArray()
 
 
+# Perform aspect computation and return as NumPy array
 def aspect(dataset, output):
-    asp_data = gdal.DEMProcessing(output, dataset, "aspect", computeEdges=True)
+    asp_data = gdal.DEMProcessing(output, dataset, "aspect", computeEdges=True, zeroForFlat=True)
 
     return asp_data.GetRasterBand(1).ReadAsArray()
 
 
-def rasterize():
-    pass
-
-
-def polygonize():
-    pass
-
-
+# Open file as a GDAL dataset
 def get_gdal_dataset(file):
     return gdal.Open(file)
 
 
+# Plot and colour raster as a PNG image
 def write_raster(dataset, path):
     figure = plt.figure()
 
-    plt.imshow(np.where((dataset >= np.mean(dataset)), 1, 0), cmap='tab20_r')
+    plt.imshow(dataset, cmap='jet')
     plt.gca().set_axis_off()
     plt.subplots_adjust(top=1, bottom=0, left=0, right=1, hspace=0, wspace=0)
     plt.margins(0, 0)

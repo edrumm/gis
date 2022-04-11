@@ -1,13 +1,11 @@
-import { SiMapbox } from 'react-icons/si';
 import { GoFileBinary } from 'react-icons/go';
-import { BiLayerPlus, BiShapePolygon, BiCog } from 'react-icons/bi';
-import { AiOutlineDownload } from 'react-icons/ai';
+import { BiShapePolygon, BiCog, BiHome } from 'react-icons/bi';
 import './style/navbar.css';
 
 // https://blog.logrocket.com/creating-multilevel-dropdown-menu-react/
 const items = [
     {
-        title: 'Online GIS',
+        title: <BiHome/>,
         submenu: [
             { title: 'GitHub' },
             { title: 'Heriot-Watt University' }

@@ -76,10 +76,8 @@ const Upload = (props) => {
         }); */
     };
 
-    const supportedTypes = '.shp, .zip, .geojson, .tiff, .tif, .bil';
+    const supportedTypes = '.shp, .zip, .geojson, .tif';
 
-    // VERY rough interface to test
-    // will fix later
     return (
         <>
         <form className="upload-form" onSubmit={send}>

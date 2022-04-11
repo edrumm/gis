@@ -1,0 +1,10 @@
+.output {
+    width: 50vw;
+    height: 50vh;
+    margin: 10em auto;
+    padding: 1%;
+    box-shadow: 0 0 5px 5px #d3d3d3;
+    border: 1px solid #efefef;
+    border-radius: 1%;
+    background-color: white;
+}
