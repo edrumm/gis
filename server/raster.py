@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# Register GDAL GeoTIFF driver
+# Register GDAL drivers
 geotiff = gdal.GetDriverByName("GTiff")
 geotiff.Register()
 
@@ -37,4 +37,4 @@ def write_raster(dataset, path):
     plt.subplots_adjust(top=1, bottom=0, left=0, right=1, hspace=0, wspace=0)
     plt.margins(0, 0)
 
-    figure.savefig(path, dpi=figure.dpi, bbox_inches='tight', pad_inches=0, transparent=True)
+    figure.savefig(path, dpi=figure.dpi, bbox_inches='tight', pad_inches=0)

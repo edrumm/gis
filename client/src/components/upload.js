@@ -34,13 +34,6 @@ const Upload = (props) => {
             });
             return;
         }
-
-        if (file.name.includes('.tif') || file.name.includes('.tiff')) {
-            props.upload(file.name, 'Raster', 'None');
-        } else {
-            props.upload(file.name, 'Vector', srid);
-        }
-
         
         const data = new FormData();
         data.append("file", file);
@@ -51,7 +44,7 @@ const Upload = (props) => {
             body: data
         };
 
-        /* fetch('/upload', options)
+        fetch('/upload', options)
         .then(res => res.json())
         .then(json => {
             if (json.err) {
@@ -65,7 +58,11 @@ const Upload = (props) => {
                     icon: 'success',
                 });
 
-                sessionStorage.setItem('geom', JSON.parse(json.body));
+                if (file.name.includes('.tif')) {
+                    props.upload(file.name, 'Raster', 'None');
+                } else {
+                    props.upload(file.name, 'Vector', srid);
+                }
             }
         })
         .catch(err => {
@@ -73,7 +70,7 @@ const Upload = (props) => {
                 title: err,
                 icon: 'error',
             });
-        }); */
+        });
     };
 
     const supportedTypes = '.shp, .zip, .geojson, .tif';

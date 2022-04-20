@@ -8,3 +8,10 @@
     border-radius: 1%;
     background-color: white;
 }
+
+.raster-image {
+    height: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

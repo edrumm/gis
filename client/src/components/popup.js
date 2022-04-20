@@ -10,4 +10,21 @@ const Popup = () => {
     });
 };
 
-export default Popup;
+const error = message => {
+    Popup().fire({
+        title: message,
+        icon: 'error'
+    })
+};
+
+const success = message => {
+    Popup().fire({
+        title: message,
+        icon: 'success'
+    });
+};
+
+export {
+    error,
+    success
+};

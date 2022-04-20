@@ -2,40 +2,26 @@ import Map, {Marker, Source, Layer} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './style/map.css';
 
-const MapWindow = () => {
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_API_TOKEN;
 
-    const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_API_TOKEN;
-
-    // TEST DATA
-    const data = {
-        type: 'FeatureCollection',
-        features: [
-          {type: 'Feature', geometry: {type: 'Point', coordinates: [-73.9299178, 40.813077]}}
-        ]
-    };
+const MapWindow = (props) => {
 
     const layerStyle = {
-        id: 'subway stations',
-        type: 'circle',
+        id: 'geom',
+        type: 'fill',
         paint: {
-            'circle-radius': 5,
-            'circle-color': '#007cbf'
+            'fill-color': 'rgba(71, 113, 231, 0.4)',
+            'fill-outline-color': '#4775e7'
         }
     };
-    // ------------
 
     return (
         <>
-            <Map
-                initialViewState={{
-                    longitude: -122.45,
-                    latitude: 37.78,
-                    zoom: 14
-                }}                
+            <Map               
                 mapStyle="mapbox://styles/mapbox/streets-v9"
                 mapboxAccessToken={MAPBOX_TOKEN}
             >
-                <Source id="my-data" type="geojson" data={data}>
+                <Source id="my-data" type="geojson" data={props.geom}>
                     <Layer {...layerStyle} />
                 </Source>
             </Map>

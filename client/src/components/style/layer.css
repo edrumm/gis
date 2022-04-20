@@ -13,10 +13,6 @@
     position: relative;
 }
 
-.layer:hover {
-    cursor: pointer;
-}
-
 .layer ul {
     list-style-type: none;
 }
@@ -31,20 +27,14 @@
     font-family: 'Century Gothic', sans-serif;
 }
 
-.rm-layer {
-    right: 2%;
-    top: 0;
-    position: absolute;
-    transition: 0.2s ease-in-out 0.2s;
-    -o-transition: 0.2s ease-in-out 0.2s;
-    -webkit-transition: 0.2s ease-in-out 0.2s;
-    -moz-transition: 0.2s ease-in-out 0.2s;
+.layer-options {
+    margin-top: 2%;
 }
 
-.rm-layer:hover {
-    transform: scale(1.25);
-    -o-transform: scale(1.25);
-    -webkit-transform: scale(1.25);
-    -moz-transform: scale(1.25);
-    -ms-transform: scale(1.25);
+.layer-options span {
+    margin-right: 2%;
+}
+
+.layer-options span:hover {
+    cursor: pointer;
 }

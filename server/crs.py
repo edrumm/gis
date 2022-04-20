@@ -1,6 +1,6 @@
 import geopandas as gpd
 
 
-# Transform a GeoDataFrame to Web Mercator projection (EPSG:3857)
-def to_web_mercator(frame):
-    return frame.to_crs(crs="EPSG:3857")
+# Transform a GeoDataFrame to WGS48 projection (EPSG:4326)
+def to_WGS84(frame):
+    return frame.to_crs("EPSG:4326")

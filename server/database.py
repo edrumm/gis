@@ -36,15 +36,6 @@ class Connection:
         self.conn.close()
         self.engine.dispose()
 
-    def table_exists(self, name):
-        with self.conn.cursor() as cur:
-            query = sql.SQL('SELECT to_regclass(public.{table})').format(table=name)
-            cur.execute(query)
-
-            res = cur.fetchall()
-
-        return True if res[0][0] else False
-
     # Execute a standard PostgreSQL query
     def postgres_query(self, query):
         with self.conn.cursor() as cur:
@@ -52,6 +43,14 @@ class Connection:
             res = cur.fetchall()
 
         return res
+
+    # Not an ideal solution but will at least "fix" the geometry column naming issue
+    def fix_geom_column(self, table):
+        with self.conn.cursor() as cur:
+            query = sql.SQL("ALTER TABLE {table} RENAME geometry TO geom").format(table=sql.Identifier(table))
+
+            cur.execute(query)
+            self.conn.commit()
 
     # Execute a PostGIS query
     def postgis(self, query):
@@ -67,3 +66,4 @@ class Connection:
             )
 
             cur.execute(query)
+            self.conn.commit()

@@ -1,13 +1,19 @@
 import { useState } from 'react';
+import { MdOutlineCheckBox, MdOutlineIndeterminateCheckBox } from 'react-icons/md';
 import { BiLayerMinus } from 'react-icons/bi';
 import Upload from './upload';
 import './style/layercollection.css';
 import './style/layer.css';
+import { error, success } from './popup';
 
 const Layer = (props) => {
 
     const [selected, setSelected] = useState(false);
     const [BGColour, setBGColour] = useState('#eeeeee');
+
+    const drop = () => {
+        console.log(`Drop ${props.name}`);
+    };
 
     const toggleSelect = () => {
         if (selected) {
@@ -25,76 +31,120 @@ const Layer = (props) => {
     const removeLayer = () => {
         setSelected(false);
         props.remove(props.index);
+
+        drop();
     };
+
+    if (selected) {
+        return(
+            <>
+            <div className="layer" style={{backgroundColor: BGColour}}>
+                <ul>
+                    <li className='layer-name' key={0}>{props.name}</li>
+                    <li className='layer-subtitle' key={1}>{props.type}</li>
+                    <li className='layer-subtitle' key={2}>{props.srid}</li>
+                    <li className='layer-options' key={3}>
+                        <span onClick={removeLayer}>
+                            <BiLayerMinus/>
+                        </span>
+                        &nbsp;
+                        <span onClick={toggleSelect}>
+                            <MdOutlineIndeterminateCheckBox/>
+                        </span>
+                    </li>
+                </ul> 
+            </div>
+            </>
+        );
+    }
 
     return(
         <>
-        <div className="layer" style={{backgroundColor: BGColour}} onClick={toggleSelect}>
+        <div className="layer" style={{backgroundColor: BGColour}}>
             <ul>
-                <li className='layer-name'>{props.name}</li>
-                <li className='layer-subtitle'>{props.type}</li>
-                <li className='layer-subtitle'>{props.srid}</li>
+                <li className='layer-name' key={0}>{props.name}</li>
+                <li className='layer-subtitle' key={1}>{props.type}</li>
+                <li className='layer-subtitle' key={2}>{props.srid}</li>
+                <li className='layer-options' key={3}>
+                    <span onClick={removeLayer}>
+                        <BiLayerMinus/>
+                    </span>
+                    &nbsp;
+                    <span onClick={toggleSelect}>
+                        <MdOutlineCheckBox/>
+                    </span>
+                </li>
             </ul> 
-            <span className="rm-layer" onClick={removeLayer}>
-                <BiLayerMinus/>
-            </span>
         </div>
         </>
     );
 };
 
-const LayerCollection = () => {
-
-    const [layers, setLayers] = useState([{
-        name: 'nyc_neighborhoods',
-        type: 'Vector',
-        srid: 26918
-    }, {
-        name: 'nyc_subway_stations',
-        type: 'Vector',
-        srid: 26918
-    }]);
-
-    const MAX_LAYERS = 8;
-
-    const [selectedLayers, setSelectedLayers] = useState([]);
-
-    const uploadLayer = (name, type, srid) => {
-        let newLayer = { name: name, type: type, srid: srid };
-        let layerList = [...layers, newLayer];
-
-        setLayers(layerList);
-    };
+const LayerCollection = (props) => {
 
     const selectLayer = i => {
-        let selected = [...selectedLayers];
-        let allLayers = [...layers];
+        let selected = [...props.selectedLayers];
+        let allLayers = [...props.layers];
 
         selected.push(allLayers[i]);
-        setSelectedLayers(selected);
+        props.setSelectedLayers(selected);
     };
 
     const deselectLayer = i => {
-        let selected = [...selectedLayers];
+        let selected = [...props.selectedLayers];
 
         selected.pop(i);
-        setSelectedLayers(selected);
+        props.setSelectedLayers(selected);
     };
 
     const removeLayer = i => {
-        let layerList = [...layers];
-        layerList.splice(i, 1);
+        let layerList = [...props.layers];
+        let selected = [...props.selectedLayers];
 
-        setLayers(layerList);
+        const data = {
+            filename: layerList[i].name
+        };
+
+        const options = {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+
+        fetch('/drop', options)
+        .then(response => response.json())
+        .then(json => {
+
+            if (json.body) {
+
+                for (let i = 0; i < selected.length; i++) {
+                    if (selected[i].name === layerList[i].name) {
+                        deselectLayer(i);
+                    }
+                }
+        
+                layerList.splice(i, 1);
+                props.setLayers(layerList);
+
+                success('Layer removed');
+
+            } else {
+                error(json.err);
+            }
+        })
+        .catch(err => error(err));
     };
 
     return (
         <>
         <div className='layer-collection'>
-            <div className='layer-header'>Upload Layers</div>
+            <div className='layer-header'>Layers</div>
             <div className='layer-list'>
                 {
-                    layers.map((l, i) => (
+                    props.layers.map((l, i) => (
                         <Layer 
                             name={l.name} 
                             type={l.type} 
@@ -108,7 +158,7 @@ const LayerCollection = () => {
                 }
             </div>
             <hr/>
-            <Upload upload={uploadLayer}/>
+            <Upload upload={props.uploadLayer}/>
         </div>
         </>
     );

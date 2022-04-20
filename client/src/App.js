@@ -1,7 +1,6 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Routes, Navigate, NavLink} from 'react-router-dom';
 import Landing from './pages/landing';
-import Display from './pages/display';
 import NotFound from './pages/notFound';
 import './App.css';
 
@@ -16,7 +15,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="" element={<Landing/>}/>
-          <Route path="display" element={<Display/>}/>
           <Route path="404" element={<NotFound/>}/>
           {/*<Route path="" element={<Navigate to={Landing}/>}/>*/}
         </Routes>

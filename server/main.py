@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, make_response
 from flask_cors import CORS, cross_origin
+from geojson_rewind import rewind
 from dotenv import dotenv_values
 from werkzeug.utils import secure_filename
 from uuid import uuid4
@@ -33,17 +34,6 @@ def dir_config(path):
 
     os.mkdir(user_path)
 
-
-# TODO Remove
-def generate_file_num():
-    num = 0
-
-    while True:
-        yield num
-        num += 1
-
-
-file_num = generate_file_num()
 
 # App config
 app.config['UPLOAD_DIR'] = os.path.join(root_dir, "upload", str(user_id))
@@ -109,18 +99,20 @@ def convex_hull():
 
     try:
         geom = functions.convex_hull(db, req['points'])
-        geom = crs.to_web_mercator(geom)
+        generate_file(f"{req['points']}-convexhull.geojson", frame=geom)
+
+        geom = crs.to_WGS84(geom)
+        geom = rewind(geom.to_json())
 
         return jsonify({
-            'body': geom.to_json(),
-            'layer': None,
+            'body': geom,
+            'filename': f"{req['points']}-convexhull.geojson",
             'err': None
         })
 
     except Exception as err:
         return jsonify({
             'body': None,
-            'layer': None,
             'err': str(err)
         })
 
@@ -132,18 +124,20 @@ def voronoi_polygons():
 
     try:
         geom = functions.voronoi_polygons(db, req['points'])
-        geom = crs.to_web_mercator(geom)
+        generate_file(f"{req['points']}-voronoipolygons.geojson", frame=geom)
+
+        geom = crs.to_WGS84(geom)
+        geom = rewind(geom.to_json())
 
         return jsonify({
-            'body': geom.to_json(),
-            'layer': None,
+            'body': geom,
+            'filename': f"{req['points']}-voronoipolygons.geojson",
             'err': None
         })
 
     except Exception as err:
         return jsonify({
             'body': None,
-            'layer': None,
             'err': str(err)
         })
 
@@ -155,18 +149,20 @@ def count():
 
     try:
         geom = functions.count_points_in_polygon(db, req['polygon'], req['points'])
-        geom = crs.to_web_mercator(geom)
+        generate_file(f"points-in-{req['polygon']}.csv", frame=geom)
+
+        geom = crs.to_WGS84(geom)
+        geom = rewind(geom.to_json())
 
         return jsonify({
-            'body': geom.to_json(),
-            'layer': None,
+            'body': geom,
+            'filename': f"points-in-{req['polygon']}.csv",
             'err': None
         })
 
     except Exception as err:
         return jsonify({
             'body': None,
-            'layer': None,
             'err': str(err)
         })
 
@@ -178,22 +174,19 @@ def slope():
         path = os.path.join(app.config['UPLOAD_DIR'], request.json['file'])
         ds = raster.get_gdal_dataset(path)
 
-        filename = request.json['file'].partition('.')[0] + next(file_num)
+        filename = request.json['file'].partition('.')[0]
 
         tif_path = os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.tif')
         png_path = os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.png')
 
-        slp = raster.aspect(ds, tif_path)
+        slp = raster.slope(ds, tif_path)
         raster.write_raster(slp, png_path)
 
-        # create_zip([tif_path, png_path], app.config['DOWNLOAD_DIR'], f'{filename}-slope.zip')
-        download(f'{filename}.tif')
+        generate_file(f'{filename}.tif', alg="slope")
 
-        return jsonify({
-            'body': True,
-            'layer': 'slope',
-            'err': None
-        })
+        response = make_response(send_file(png_path, mimetype="image/png"))
+        response.headers["Content-Type"] = "image/png"
+        return response
 
     except Exception as e:
         return jsonify({
@@ -209,7 +202,7 @@ def aspect():
         path = os.path.join(app.config['UPLOAD_DIR'], request.json['file'])
         ds = raster.get_gdal_dataset(path)
 
-        filename = request.json['file'].partition('.')[0] + next(file_num)
+        filename = request.json['file'].partition('.')[0]
 
         tif_path = os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.tif')
         png_path = os.path.join(app.config['DOWNLOAD_DIR'], f'{filename}.png')
@@ -217,14 +210,11 @@ def aspect():
         asp = raster.aspect(ds, tif_path)
         raster.write_raster(asp, png_path)
 
-        # create_zip([tif_path, png_path], app.config['DOWNLOAD_DIR'], f'{filename}-aspect.zip')
-        download(f'{filename}.tif')
+        generate_file(f'{filename}.tif', alg="aspect")
 
-        return jsonify({
-            'body': True,
-            'layer': 'aspect',
-            'err': None
-        })
+        response = make_response(send_file(png_path, mimetype="image/png"))
+        response.headers["Content-Type"] = "image/png"
+        return response
 
     except Exception as e:
         return jsonify({
@@ -236,42 +226,34 @@ def aspect():
 @app.route('/test', methods=['GET', 'POST'])
 @cross_origin()
 def test():
-    try:
-        """
-        geom: gpd.GeoDataFrame = file.read_vector("C:\\Users\\esd06\\Documents\\4TH-YEAR\\Honours-Project\\sample data\\nyc\\nyc_subway_stations.geojson")
-        geom.set_crs(epsg=26918, inplace=True, allow_override=True)
-        
-        """
-
-        extract_zip("C:\\Users\\esd06\\Documents\\4TH-YEAR\\Honours-Project\\sample data\\nyc\\nyc_subway_stations.zip",
-                    app.config['UPLOAD_DIR'], "nyc_subway_stations")
-
-        geom = file.read_vector(os.path.join(app.config['UPLOAD_DIR'], "nyc_subway_stations", "nyc_subway_stations.shp"))
-
-        download("nyc_subway_stations.geojson", geom)
-        download("nyc_subway_stations.csv", geom)
-        download("nyc_subway_stations.shp", geom)
-
-        return jsonify({
-            'body': geom.to_json(),
-            'crs': str(geom.crs),
-            'layer': None,
-            'err': None
-        })
-
-    except Exception as err:
-        return jsonify({
-            'body': None,
-            'layer': None,
-            'err': str(err)
-        })
+    return jsonify({
+        'body': "Test route",
+        'err': None
+    })
 
 
 @app.route('/drop', methods=['POST'])
 @cross_origin()
 def drop():
+    req = request.json
+
     try:
-        db.postgis_drop_layer(request.json['layer'])
+        path = os.path.join(app.config['UPLOAD_DIR'], req['filename'])
+        os.remove(path)
+
+        if ".tif" in req['filename']:
+            return jsonify({
+                'body': True,
+                'err': None
+            })
+
+        table = req['filename'].partition('.')[0]
+
+        if ".zip" in req['filename']:
+            path = os.path.join(app.config['UPLOAD_DIR'], req['filename'])
+            shutil.rmtree(path)
+
+        db.postgis_drop_layer(table)
 
         return jsonify({
             'body': True,
@@ -290,20 +272,22 @@ def drop():
 def upload():
     try:
         f = request.files['file']
+        crs = request.form['srid']
 
         if not any(ext in f.filename for ext in app.config['SUPPORTED_TYPES']):
             raise IOError("The uploaded file type is not supported")
 
         elif ".shp" in f.filename:
-            raise IOError("A shapefile must be uploaded as a zip with required supplementary files and optional prj")
+            raise IOError("A shapefile must be uploaded as a zip with shp, shx, dbf, prj, and cfg files included")
 
         filename = secure_filename(f.filename)
         layer_name = f.filename.partition('.')[0]
 
-        if db.table_exists(layer_name):
+        path = os.path.join(app.config['UPLOAD_DIR'], filename)
+
+        if os.path.exists(path):
             raise IOError("A layer with the same name already exists")
 
-        path = os.path.join(app.config['UPLOAD_DIR'], filename)
         f.save(path)
 
         if ".tif" in filename:
@@ -317,55 +301,62 @@ def upload():
 
             if ".zip" in filename:
                 extract_zip(path, app.config['UPLOAD_DIR'], layer_name)
-                geom = file.read_vector(os.path.join(path, layer_name, f'{layer_name}.shp'))
+                geom = file.read_vector(os.path.join(app.config['UPLOAD_DIR'], layer_name, f'{layer_name}.shp'))
 
             else:
                 geom = file.read_vector(path)
 
-            # TODO: Get CRS value from request
-            # geom.set_crs(epsg=26918, inplace=True, allow_override=True)
+            geom.set_crs(f'epsg:{crs}', inplace=True, allow_override=True)
 
-            db.postgis_insert(geom, layer_name, 26918)
-
-            geom = crs.to_web_mercator(geom)
-            os.remove(path)
+            db.postgis_insert(geom, layer_name, crs)
+            db.fix_geom_column(layer_name)
 
             return jsonify({
-                'body': geom.to_json(),
-                'layer': layer_name,
+                'body': True,
                 'err': None
             })
 
     except Exception as e:
         return jsonify({
             'body': None,
-            'layer': None,
             'err': str(e)
         })
 
 
-def download(filename, frame=None):
+@app.route('/download', methods=['POST'])
+@cross_origin()
+def download():
+    req = request.json
+
+    path = os.path.join(app.config['DOWNLOAD_DIR'], req['filename'])
+    
+    try:
+        if ".geojson" in req['filename']:
+            response = make_response(send_file(path, mimetype="application/geo+json"))
+            response.headers["Content-Type"] = "application/geo+json"
+            return response
+
+        elif ".csv" in req['filename']:
+            response = make_response(send_file(path, mimetype="text/csv"))
+            response.headers["Content-Type"] = "text/csv"
+            return response
+
+        else:
+            response = make_response(send_file(path, mimetype="application/zip"))
+            response.headers["Content-Type"] = "application/zip"
+            return response
+
+    except Exception as e:
+        return jsonify({
+            'err': str(e)
+        })
+
+
+def generate_file(filename, frame=None, alg=None):
     path = os.path.join(app.config['DOWNLOAD_DIR'], filename)
 
     if ".csv" in filename:
         file.write_csv(frame, path)
-
-    elif ".shp" in filename:
-        file.write_vector(frame, path)
-        name = filename.partition('.')[0]
-
-        shp_aux_files = [
-            os.path.join(app.config['DOWNLOAD_DIR'], f'{name}.shp'),
-            os.path.join(app.config['DOWNLOAD_DIR'], f'{name}.shx'),
-            os.path.join(app.config['DOWNLOAD_DIR'], f'{name}.dbf'),
-            os.path.join(app.config['DOWNLOAD_DIR'], f'{name}.prj'),
-            os.path.join(app.config['DOWNLOAD_DIR'], f'{name}.cpg')
-        ]
-
-        create_zip(shp_aux_files, app.config['DOWNLOAD_DIR'], f'{name}.zip')
-
-        for f in shp_aux_files:
-            os.remove(f)
 
     elif "geojson" in filename:
         file.write_vector(frame, path, driver="GeoJSON")
@@ -378,7 +369,10 @@ def download(filename, frame=None):
             os.path.join(app.config['DOWNLOAD_DIR'], f'{name}.png')
         ]
 
-        create_zip(raster_files, app.config['DOWNLOAD_DIR'], f'{name}.zip')
+        if alg is not None:
+            create_zip(raster_files, app.config['DOWNLOAD_DIR'], f'{name}-{alg}.zip')
+        else:
+            create_zip(raster_files, app.config['DOWNLOAD_DIR'], f'{name}.zip')
 
 
 # ---------------- ENTRY POINT ----------------
